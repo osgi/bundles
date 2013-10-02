@@ -1,0 +1,9 @@
+-include: ../cnf/runlib.properties
+
+
+
+-runbundles: \
+	${base},\
+	${web},\
+	org.h2;version=1.3.172,\
+	enRoute.jdbc.dsp;version=latest

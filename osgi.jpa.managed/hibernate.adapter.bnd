@@ -1,0 +1,9 @@
+#
+# Make hibernate work the OSGi way
+#
+
+Private-Package: osgi.jpa.managed.hibernate.adapter
+Export-Package: org.jboss.jandex.*
+
+-includeresource: META-INF/services/org.hibernate.engine.transaction.jta.platform.spi.JtaPlatformProvider;literal="osgi.jpa.managed.hibernate.adapter.JtaPlatformProviderImpl"
+Import-Package: org.hibernate.proxy, javassist.util.proxy,*

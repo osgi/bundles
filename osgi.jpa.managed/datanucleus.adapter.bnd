@@ -1,0 +1,2 @@
+Service-Component: *
+Private-Package: osgi.jpa.managed.datanucleus.adapter

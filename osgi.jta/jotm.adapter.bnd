@@ -1,0 +1,3 @@
+Private-Package: osgi.jta.jotm.adapter
+Service-Component: *
+Bundle-Version: 1.0.0.${tstamp}

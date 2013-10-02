@@ -1,0 +1,13 @@
+Bundle-Version: 1.0.0.${tstamp}
+Bundle-Description: This Data Source Producer bundle registers configured XA Data Source\
+ if you create a factory configuration for the `enRoute.component.jdbc.XADataSourceFactory`.\
+ The configuration properties are used to find a matching Data Source Factory service and\
+ this factory is used to create an XA Data Source.  
+Bundle-DocURL: http://jpm4j.org/#!/p/osgi/enRoute.jdbc.dsp
+Private-Package: osgi.jdbc.managed.aux
+Export-Package: org.osgi.service.jdbc;provide:=true
+Service-Component: *
+-includeresource: {OSGI-OPT/readme.md=readme-managed.md}
+
+Import-Package: !aQute.bnd.annotation.metatype,\
+	*

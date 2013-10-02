@@ -1,0 +1,48 @@
+Private-Package: osgi.jpa.managed.jdbc.test,\
+	osgi.jpa.managed.jta.test,\
+	osgi.jpa.managed.appl.test
+	
+# force an export for a non-existent package
+# so that some dependencies are solved.
+
+Export-Package: \
+	org.apache.tools.ant;version=1.0.0, \
+	org.apache.tools.ant.taskdefs;version=1.0.0, \
+	org.apache.tools.ant.types;version=1.0.0
+	
+
+
+Service-Component: *
+
+
+
+-buildpath: osgi.core,\
+	osgi.cmpn,\
+	biz.aQute.bnd.annotation,\
+	org.apache.servicemix.bundles.junit,\
+	aQute.dstest;version=1.1,\
+	javax.persistence;version=2.1.0,\
+	org.apache.geronimo.specs.geronimo-jta_1.1_spec;version=1.1
+
+-include: ../cnf/runlib.properties
+
+-runpath: 	org.apache.geronimo.specs.geronimo-jta_1.1_spec;version=1.1.1
+-testpath:  org.apache.servicemix.bundles.junit;version=4.11
+
+-runbundles: ${base},\
+	${web},\
+	${shell}, \
+	${jpa-eclipse}, \
+	${jta-jotm}, \
+	${jpa-hibernate}, \
+	org.h2,\
+	com.mysql.jdbc,\
+	aQute.dstest;version=1.1.0,\
+	osgi.jpa.managed.aux;version=latest, \
+	osgi.jdbc.mysql.adapter;version=latest,\
+	osgi.jdbc.managed.aux;version=latest
+	
+
+Test-Cases: ${classes;CONCRETE;EXTENDS;junit.framework.TestCase}
+
+Meta-Persistence: osgi/jpa/managed/appl/test/persistence.xml

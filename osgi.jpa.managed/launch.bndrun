@@ -1,0 +1,50 @@
+# 
+# Test run for the JPA bridge
+#
+-include: ${workspace}/cnf/runlib.properties
+-runbundles: \
+	${base},\
+	${web},\
+	${jta-jotm},\
+	${jdbc-h2},\
+	${jpa-hibernate},\
+	oow.blog.stupid;version=latest,\
+	oow.jpa.bridge;version=latest,\
+	oow.jpa.app;version=latest,\
+	oow.jdbc.dsp;version=latest
+
+
+-runfw: org.apache.felix.framework;version='[4,5)'
+-runee: JavaSE-1.6
+
+
+
+
+-runpath: 	org.apache.geronimo.specs.geronimo-jta_1.1_spec;version=1.1.1
+
+-runsystempackages: \
+	javax.xml.stream;version=1.1, \
+	javax.xml.stream.events;version=1.1, \
+	javax.xml.stream.util;version=1.1
+
+
+-runproperties: bnd.configuration='[ \
+   { \
+      "service.factoryPid":			"aQute.executor.ExecutorImpl", \
+      "type":						"FIXED", \
+      "service.pid":				"DefaultExecutor", \
+      "size":						10 \
+   }, {\
+   		"service.factoryPid":		"oow.jpa.bridge.impl.JPABridge", \
+   	    "service.pid":				"Wildcard", \
+   		"name":						"*" \
+   }, {  \
+      "service.factoryPid":        "oow.impl.jdbc.XADataSourceImpl", \
+   	  "service.pid":				"DataSourceMySql", \
+      "xurl":                       "jdbc:mysql:///testjpa?user=root&password=", \
+      "url":                       "jdbc:h2:~/test-jpa3" \
+   } \
+]', \
+  org.osgi.service.http.port=8081
+  
+

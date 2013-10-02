@@ -1,0 +1,6 @@
+Private-Package: bitronix.*,\
+	osgi.jta.bitronix.adapter
+Bundle-Version: 2.1.3.${tstamp}
+Service-Component: *
+Import-Package: javax.jms;resolution:=optional,\
+	*

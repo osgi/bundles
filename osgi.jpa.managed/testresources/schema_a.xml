@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" version="1.0">
+ 
+   <persistence-unit name="my-pu">
+     <description>My Persistence Unit</description>
+     <provider>com.objectdb.jpa.Provider</provider>
+     <mapping-file>META-INF/mappingFile.xml</mapping-file>
+     <jar-file>packedEntity.jar</jar-file>
+     <class>sample.MyEntity1</class>
+     <class>sample.MyEntity2</class>
+     <properties>
+       <property name="javax.persistence.jdbc.url"
+                 value="objectdb://localhost/my.odb"/>
+       <property name="javax.persistence.jdbc.user" value="admin"/>
+       <property name="javax.persistence.jdbc.password" value="admin"/>
+     </properties>
+   </persistence-unit>
+ 
+</persistence>
