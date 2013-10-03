@@ -39,10 +39,6 @@
 		sha1=20ab3f1e1b49247df437bafa509d0aa80cab1ef9
 
 	
-, \
-	${workspace}/cnf/plugins/aQute.jpm.bndrepo.jar
-#-pluginpath: ${workspace}/cnf/plugins/aQute.jpm.bndrepo.jar
-
 -plugin: \
      aQute.library.bnd.JpmRepository; \
         includeStaged=true; \
