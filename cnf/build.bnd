@@ -34,7 +34,13 @@
 # /Ws/aQute.jpm/aQute.jpm.bndrepo/generated/aQute.jpm.bndrepo.jar, 
 
 -pluginpath:  \
-	/Ws/aQute.jpm/aQute.jpm.bndrepo/generated/aQute.jpm.bndrepo.jar,${workspace}/cnf/plugins/aQute.jpm.bndrepo.jar
+	${workspace}/cnf/cache/jpmrepo.jar; \
+		url='http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/20AB3F1E1B49247DF437BAFA509D0AA80CAB1EF9'; \
+		sha1=20ab3f1e1b49247df437bafa509d0aa80cab1ef9
+
+	
+, \
+	${workspace}/cnf/plugins/aQute.jpm.bndrepo.jar
 #-pluginpath: ${workspace}/cnf/plugins/aQute.jpm.bndrepo.jar
 
 -plugin: \

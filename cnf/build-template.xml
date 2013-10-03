@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="template" default="none">
 
+	
+	
 	<!--
 	     WARNING!!!
 	     
@@ -22,16 +24,28 @@
 	-->
 	<target name="init" unless="initialized">
 		<!-- Initialise some basic properties -->
+		
 		<tstamp>
 			<format property="NOW" pattern="yyyyMMdd-HHmmss" timezone="UTC"/>
 		</tstamp>
 		<dirname property="projectdir" file="${ant.file}" />
 		<dirname property="workspacedir" file="${projectdir}" />
-
-		<!-- Define the classpath of bnd (location is defined in build.properties) -->
 		<property file="${workspacedir}/cnf/build.properties"/>
-		<path id="bnd-classpath" location="${workspacedir}/cnf/${bnd.location}" />
+		
+		<!-- Define where we store bnd -->
+		<property name="bnd.location" value="${workspacedir}/cnf/cache/biz.aQute.bnd-${bnd.version}.jar" />
+    	<mkdir dir="${workspacedir}/cnf/cache"/>
 
+		<!-- Download bnd if it does not exist -->
+		<get src="${bnd.url}" 
+		    dest="${bnd.location}"
+		    verbose="on"
+			skipexisting="true"
+		    usetimestamp="true"/>
+
+		<!-- Define the classpath of bnd -->
+		<path id="bnd-classpath" location="${bnd.location}" />
+		
 		<!-- Load bnd and prepare the workspace -->
 		<taskdef resource="aQute/bnd/ant/taskdef.properties" classpathref="bnd-classpath" />
 		<bndprepare basedir="${projectdir}" print="false" top="${release.dir}" />
@@ -121,6 +135,9 @@
 			<formatter type="xml"/>
 			<batchtest todir="${target}">
 				<fileset dir="test">
+					<include name="**/*.java"/>
+				</fileset>
+				<fileset dir="src">
 					<include name="**/*.java"/>
 				</fileset>
 			</batchtest>
