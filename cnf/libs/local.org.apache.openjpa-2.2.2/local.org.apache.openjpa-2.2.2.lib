@@ -1,0 +1,8 @@
+org.apache.openjpa;version=2.2.2
+com.springsource.org.apache.commons.collections;version=3.2.1
+com.springsource.org.apache.commons.dbcp;version=1.2.2.osgi
+com.springsource.org.apache.commons.lang;version=2.6.0
+com.springsource.org.apache.commons.pool;version=1.5.3
+com.springsource.org.objectweb.asm;version=3.2.0
+com.springsource.serp;version=1.13.1
+

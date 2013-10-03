@@ -44,7 +44,8 @@
         location=~/.bnd/ycache; \
         index=${workspace}/cnf/jpm4j.json; \
         depository.group=OSGi; \
-        depository.name=enRoute.rt
+        depository.name=enRoute.rt, \
+	aQute.lib.deployer.FileRepo;readonly=true;name=Libs;location=${workspace}/cnf/libs        
         
         
 #        , \

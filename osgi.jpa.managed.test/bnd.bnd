@@ -1,5 +1,4 @@
 Private-Package: osgi.jpa.managed.jdbc.test,\
-	osgi.jpa.managed.jta.test,\
 	osgi.jpa.managed.appl.test
 	
 # force an export for a non-existent package
@@ -16,11 +15,11 @@ Service-Component: *
 
 
 
--buildpath: osgi.core,\
-	osgi.cmpn,\
+-buildpath: \
+	local.api;version=1.0.0,\
+	local.api.test;version=1.0.0,\
+	osgi.cmpn;version='[4.3.1,5.0.0)', \
 	biz.aQute.bnd.annotation,\
-	org.apache.servicemix.bundles.junit,\
-	aQute.dstest;version=1.1,\
 	javax.persistence;version=2.1.0,\
 	org.apache.geronimo.specs.geronimo-jta_1.1_spec;version=1.1
 
@@ -29,18 +28,19 @@ Service-Component: *
 -runpath: 	org.apache.geronimo.specs.geronimo-jta_1.1_spec;version=1.1.1
 -testpath:  org.apache.servicemix.bundles.junit;version=4.11
 
--runbundles: ${base},\
-	${web},\
-	${shell}, \
-	${jpa-eclipse}, \
-	${jta-jotm}, \
-	${jpa-hibernate}, \
+-runbundles: \
 	org.h2,\
 	com.mysql.jdbc,\
-	aQute.dstest;version=1.1.0,\
-	osgi.jpa.managed.aux;version=latest, \
 	osgi.jdbc.mysql.adapter;version=latest,\
-	osgi.jdbc.managed.aux;version=latest
+	osgi.jpa.managed.aux;version=latest,\
+	osgi.jdbc.managed.aux;version=latest,\
+	local.api;version=1.0.0,\
+	local.run.test;version=1.0.0,\
+	local.org.eclipse.persistence,\
+	local.org.hibernate,\
+	local.org.ow2.jotm,\
+	local.run.base,\
+	local.run.web
 	
 
 Test-Cases: ${classes;CONCRETE;EXTENDS;junit.framework.TestCase}

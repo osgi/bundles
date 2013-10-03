@@ -1,0 +1,10 @@
+local.api;							version=1.0.0
+org.apache.felix.configadmin;		version=1.6.0
+org.apache.felix.eventadmin;		version=1.3.2
+org.apache.felix.log;				version=1.0.1
+org.apache.felix.scr;				version=1.6.0
+slf4j.simple;						version=1.7.5
+biz.aQute.bnd.annotation;			version=2.2.0
+aQute.configurer;					version=1.0.0
+aQute.executor;						version=1.0.0
+aQute.logger.intrf;					version=1.0.0
