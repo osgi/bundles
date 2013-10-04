@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="template" default="none">
 
-	
-	
+
+
 	<!--
 	     WARNING!!!
 	     
@@ -15,7 +15,7 @@
 	        <echo message="This task executed AFTER compilation."/>
 	     </target>
 	-->
-	
+
 	<!-- 
 	     INIT
 	     The target is a dependent of all other targets.
@@ -24,39 +24,39 @@
 	-->
 	<target name="init" unless="initialized">
 		<!-- Initialise some basic properties -->
-		
+
 		<tstamp>
-			<format property="NOW" pattern="yyyyMMdd-HHmmss" timezone="UTC"/>
+			<format property="NOW" pattern="yyyyMMdd-HHmmss" timezone="UTC" />
 		</tstamp>
 		<dirname property="projectdir" file="${ant.file}" />
 		<dirname property="workspacedir" file="${projectdir}" />
-		<property file="${workspacedir}/cnf/build.properties"/>
-		
+		<property file="${workspacedir}/cnf/build.properties" />
+
 		<!-- Define where we store bnd -->
-		<property name="bnd.location" value="${workspacedir}/cnf/cache/biz.aQute.bnd-${bnd.version}.jar" />
-    	<mkdir dir="${workspacedir}/cnf/cache"/>
-
-		<!-- Download bnd if it does not exist -->
-		<get src="${bnd.url}" 
-		    dest="${bnd.location}"
-		    verbose="on"
-			skipexisting="true"
-		    usetimestamp="true"/>
-
-		<!-- Define the classpath of bnd -->
-		<path id="bnd-classpath" location="${bnd.location}" />
+		<mkdir dir="${workspacedir}/cnf/cache" />
 		
-		<!-- Load bnd and prepare the workspace -->
+		<property name="bnd.location" value="${workspacedir}/cnf/cache/biz.aQute.bnd-${bnd.version}.jar" />
+		<property name="repoindex.location" value="${workspacedir}/cnf/cache/org.osgi.impl.bundle.repoindex.ant-${repoindex.version}.jar" />
+
+		<get src="${bnd.url}" dest="${bnd.location}" verbose="false" skipexisting="true" />
+		<get src="${repoindex.url}" dest="${repoindex.location}" verbose="false" skipexisting="true" />
+
+		<path id="bnd-classpath" 		location="${bnd.location}" />
+        <path id="repoindex-classpath" 	location="${repoindex.location}" />
+		
+        <taskdef resource="taskdef.properties" classpathref="repoindex-classpath"/>
 		<taskdef resource="aQute/bnd/ant/taskdef.properties" classpathref="bnd-classpath" />
+
+		<!-- Load bnd and prepare the workspace -->
 		<bndprepare basedir="${projectdir}" print="false" top="${release.dir}" />
 
 		<condition property="testDirExists">
-			<available file="${basedir}/test" type="dir"/>
+			<available file="${basedir}/test" type="dir" />
 		</condition>
 
 		<!-- Create a marker property to indicate that initialisation has been completed -->
 		<property name="initialized" value="set" />
-		<echo message="Enter project ${project.name}"/>
+		<echo message="Enter project ${project.name}" />
 	</target>
 
 	<!-- 
@@ -69,19 +69,13 @@
 		</subant>
 	</target>
 
-	<!--
-	     Test
-	-->
-	<target name="test" depends="compile">
-		<bndtest/>
-	</target>
 
 	<!--
 	     COMPILE
 	     Compile the sources. 
 	-->
 	<target name="compile" depends="dependencies" if="project.sourcepath">
-		<mkdir dir="${project.output}"/>
+		<mkdir dir="${project.output}" />
 		<javac fork="yes" executable="${javac}" srcdir="${project.sourcepath}" destdir="${project.output}" classpath="${project.buildpath}" bootclasspath="${project.bootclasspath}" deprecation="true" listfiles="true" target="${javac.target}" source="${javac.source}" debug="${javac.debug}" includeAntRuntime="no" verbose="${verbose}" />
 		<copy todir="${project.output}" verbose="${verbose}" preservelastmodified="true">
 			<fileset dir="${project.sourcepath}">
@@ -96,7 +90,7 @@
 		Iterate of the jars to build.
 	-->
 	<target name="build" depends="compile">
-		<mkdir dir="${target}"/>
+		<mkdir dir="${target}" />
 		<bnd command="build" exceptions="true" basedir="${project}" />
 	</target>
 
@@ -104,14 +98,54 @@
 		<subant target="release" inheritAll="false" buildpath="${project.dependson}">
 			<property name="donotrecurse" value="true" />
 		</subant>
-		<bndrelease/>
+		<bndrelease />
+	</target>
+
+	<!--
+	        DIST
+
+	        Ensure all projects are build and tested
+	    -->
+	<target name="dist" depends="init" if="project.dependson" unless="donotrecurse">
+		
+		<!-- test all projects we depend on -->
+		
+		<subant target="_test" inheritAll="false" buildpath="${project.dependson}">
+			<property name="donotrecurse" value="true" />
+		</subant>
+
+		<!-- copy the results of our projects to our repo -->
+		<mkdir dir="repo" />
+		<copy todir="repo">
+			<fileset dir="..">
+				<include name="**/generated/*.jar"/>
+				<exclude name="dist/*"/>
+			</fileset>
+		</copy>
+
+		<!-- Create an index -->
+        <repoindex out="${projectdir}/repo/index.xml" name="osgi.bundles" pretty="true">
+            <fileset dir="${projectdir}/repo" includes="**/*.jar" excludes="**/*-latest.jar"/>
+        </repoindex>
+		
+	</target>
+
+
+	<target name="_test" depends="test,junit">
+	</target>
+
+	<!--
+	     Test
+	-->
+	<target name="test" depends="compile" if="Test-Cases">
+		<bndtest />
 	</target>
 
 	<!-- 
 		JUNIT
 	-->
-	<target name="compileTests" depends="init,build" if="testDirExists">
-		<mkdir dir="bin_test"/>
+	<target name="compileTests" depends="init,build" if="testDirExists" unless="no.junit">
+		<mkdir dir="bin_test" />
 		<javac fork="yes" executable="${javac}" srcdir="test" destdir="bin_test" classpath="${project.buildpath}:${project.testpath}" bootclasspath="${project.bootclasspath}" deprecation="true" listfiles="true" target="${javac.target}" source="${javac.source}" debug="${javac.debug}" includeAntRuntime="no" verbose="${verbose}" />
 		<!--
 		  The eclipse compiler copies resources but the Javac compiler does not
@@ -126,19 +160,19 @@
 		</copy>
 	</target>
 
-	<target name="junit" depends="init,compileTests" if="testDirExists">
+	<target name="junit" depends="init,compileTests" if="testDirExists" unless="no.junit">
 		<junit showoutput="false" printsummary="true" failureproperty='stop' errorproperty='stop' fork="true" dir="${basedir}">
 			<assertions>
 				<enable />
 			</assertions>
 			<classpath path="${project.buildpath}:bin_test/" />
-			<formatter type="xml"/>
+			<formatter type="xml" />
 			<batchtest todir="${target}">
 				<fileset dir="test">
-					<include name="**/*.java"/>
+					<include name="**/*.java" />
 				</fileset>
 				<fileset dir="src">
-					<include name="**/*.java"/>
+					<include name="**/*.java" />
 				</fileset>
 			</batchtest>
 		</junit>
@@ -153,9 +187,9 @@
 
 	<target name="clean" depends="init">
 		<bnd command="clean" exceptions="true" basedir="${project}" />
-		<delete dir="bin"/>
-		<delete dir="bin_test"/>
-		<delete dir="${target}"/>
+		<delete dir="bin" />
+		<delete dir="bin_test" />
+		<delete dir="${target}" />
 	</target>
 
 	<!--
@@ -177,22 +211,8 @@
 		<echo>javac.source:           ${javac.source}</echo>
 		<echo>javac.target:           ${javac.target}</echo>
 		<echo>p:                      ${p}</echo>
-		<echo>btool.manifestVersion:  ${btool.manifestVersion}</echo>
-		<echo>btool.analyse:          ${btool.analyse}</echo>
-		<echo>btool.showmanifest:     ${btool.showmanifest}</echo>
-		<echo>btool.noversion:     	  ${btool.noversion}</echo>
-		<echo>btool.sources:     	  ${btool.sources}</echo>
-		<echo>btool.noextraheaders:   ${btool.noextraheaders}</echo>
-		<echo>jars.compile.order:     ${jars.compile.order}</echo>
-		<echo>bin.includes:           ${bin.includes}</echo>
-		<echo>base.modfied:           ${base.modified} (${base.modified.readable})</echo>
 		<echo>target:                 ${target}</echo>
-		<echo>release.target:         ${release.target}</echo>
-		<echo>licensed repo:          ${licensed-repo}</echo>
-		<echo>repo:                   ${repo}</echo>
-		<echo>use.bnd:                ${use.bnd}</echo>
-		<echo>nodeploy:               ${nodeploy}</echo>
-		<echo>-dependson:             ${-dependson}</echo>
+		<echo>-dependson:             ${project.dependson}</echo>
 
 	</target>
 
