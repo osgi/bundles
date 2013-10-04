@@ -4,4 +4,38 @@
 	<!-- -->
 
 	<import file="../cnf/build.xml" />
+
+	<!--
+	        DIST
+
+	        Ensure all projects are build and tested
+	    -->
+	<target name="dist" depends="init" if="project.dependson" unless="donotrecurse">
+
+		<!-- test all projects we depend on -->
+
+		<subant target="junit" inheritAll="false" buildpath="${project.dependson}">
+			<property name="donotrecurse" value="true" />
+		</subant>
+
+		<!-- copy the results of our projects to our repo -->
+		<mkdir dir="repo" />
+		<copy todir="repo">
+			<fileset dir="..">
+				<include name="**/generated/*.jar" />
+				<exclude name="dist/*" />
+			</fileset>
+		</copy>
+
+		<!-- Create an index -->
+		<repoindex out="${projectdir}/repo/index.xml" name="osgi.bundles" pretty="true">
+			<fileset dir="${projectdir}/repo" includes="**/*.jar" excludes="**/*-latest.jar" />
+		</repoindex>
+
+		<subant target="osgi-junit" inheritAll="false" buildpath="${project.dependson}">
+			<property name="donotrecurse" value="true" />
+		</subant>
+	</target>
+
+
 </project>
