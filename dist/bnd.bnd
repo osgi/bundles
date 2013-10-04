@@ -1,0 +1,3 @@
+-dependson: osgi.*
+no.junit: true
+-nobundles: true
