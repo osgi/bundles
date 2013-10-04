@@ -16,8 +16,8 @@ Service-Component: *
 
 
 -buildpath: \
-	local.api;version=1.0.0,\
-	local.api.test;version=1.0.0,\
+	cnf.api;version=1.0.0,\
+	cnf.api.test;version=1.0.0,\
 	osgi.cmpn;version='[4.3.1,5.0.0)', \
 	biz.aQute.bnd.annotation,\
 	javax.persistence;version=2.1.0,\
@@ -34,13 +34,14 @@ Service-Component: *
 	osgi.jdbc.mysql.adapter;version=latest,\
 	osgi.jpa.managed.aux;version=latest,\
 	osgi.jdbc.managed.aux;version=latest,\
-	local.api;version=1.0.0,\
-	local.run.test;version=1.0.0,\
-	local.org.eclipse.persistence,\
-	local.org.hibernate,\
-	local.org.ow2.jotm,\
-	local.run.base,\
-	local.run.web
+	cnf.api;version=1.0.0,\
+	cnf.run.test;version=1.0.0,\
+	cnf.org.eclipse.persistence,\
+	cnf.org.hibernate,\
+	cnf.org.ow2.jotm,\
+	cnf.run.base,\
+	cnf.run.web, \
+	cnf.run.shell
 	
 
 Test-Cases: ${classes;CONCRETE;EXTENDS;junit.framework.TestCase}
