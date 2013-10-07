@@ -1,36 +1,30 @@
 package osgi.jpa.managed.jdbc.test;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Hashtable;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
-import javax.sql.XADataSource;
+import javax.sql.*;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.util.tracker.ServiceTracker;
+import org.junit.*;
+import org.junit.rules.*;
+import org.osgi.framework.*;
+import org.osgi.service.cm.*;
+import org.osgi.service.jdbc.*;
+import org.osgi.util.tracker.*;
 
-import aQute.bnd.annotation.component.Reference;
-import aQute.test.dummy.ds.DummyDS;
-import aQute.test.dummy.log.DummyLog;
+import aQute.bnd.annotation.component.*;
+import aQute.test.dummy.ds.*;
+import aQute.test.dummy.log.*;
 
 public class JDBCManagedTest extends TestCase {
 
 	public static final String MYSQL_URL = "jdbc:mysql:///test_jdbc?user=root&password=&createDatabaseIfNotExist=true";
 	public static final String XA_DATA_SOURCE_FACTORY = "osgi.jdbc.managed.aux.XADataSourceFactory";
 	public static final String H2_URL = "jdbc:h2:mem:test";
-	
+
 	@Rule
 	TemporaryFolder folder = new TemporaryFolder();
 	private ConfigurationAdmin cm;
@@ -79,13 +73,13 @@ public class JDBCManagedTest extends TestCase {
 		props.put("dataSourceFactory.target", "("
 				+ DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + "=org.h2.Driver)");
 
-		Configuration c = cm.createFactoryConfiguration(
-				XA_DATA_SOURCE_FACTORY, null);
+		Configuration c = cm.createFactoryConfiguration(XA_DATA_SOURCE_FACTORY,
+				null);
 		c.update(props);
 		try {
 
 			XADataSource service = xtds.waitForService(20000);
-			assertEquals( 1, xtds.size());
+			assertEquals(1, xtds.size());
 			assertNotNull(service);
 
 			Connection connection = service.getXAConnection().getConnection();
@@ -103,7 +97,6 @@ public class JDBCManagedTest extends TestCase {
 		checkGone();
 	}
 
-
 	/**
 	 * Test MySQL
 	 */
@@ -117,15 +110,16 @@ public class JDBCManagedTest extends TestCase {
 		Hashtable<String, String> props = new Hashtable<String, String>();
 		props.put("url", MYSQL_URL);
 		props.put("dataSourceFactory.target", "("
-				+ DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + "=com.mysql.jdbc.Driver)");
+				+ DataSourceFactory.OSGI_JDBC_DRIVER_CLASS
+				+ "=com.mysql.jdbc.Driver)");
 
-		Configuration c = cm.createFactoryConfiguration(
-				XA_DATA_SOURCE_FACTORY, null);
+		Configuration c = cm.createFactoryConfiguration(XA_DATA_SOURCE_FACTORY,
+				null);
 		c.update(props);
 		try {
 
 			XADataSource service = xtds.waitForService(20000);
-			assertEquals( 1, xtds.size());
+			assertEquals(1, xtds.size());
 			assertNotNull(service);
 
 			Connection connection = service.getXAConnection().getConnection();
@@ -138,6 +132,12 @@ public class JDBCManagedTest extends TestCase {
 			statement.execute("drop table blub;");
 			statement.execute("create table blub ( first int);");
 			connection.close();
+		} catch (Exception e) {
+			// if no MySQL is installed we ignore this test 
+			if ( e.getClass().getName().equals("com.mysql.jdbc.exceptions.jdbc4.CommunicationsException"))
+				return;
+			
+			throw e;
 		} finally {
 			c.delete();
 		}
