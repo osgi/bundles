@@ -121,7 +121,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	 * @see javax.persistence.spi.PersistenceUnitInfo#getJtaDataSource()
 	 */
 	@Override
-	public synchronized DataSourceWrapper getJtaDataSource() {
+	public synchronized DataSource getJtaDataSource() {
 		System.out.println("get jta data source " + getPersistenceUnitName());
 
 		try {
@@ -131,7 +131,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 						sourceBundle.bridge.xaDataSource, true,
 						sourceBundle.bridge.log);
 			}
-			return jtadatasource;
+			return jtadatasource.getDataSource();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -240,7 +240,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 						sourceBundle.bridge.xaDataSource, false,
 						sourceBundle.bridge.log);
 			}
-			return nonjtadatasource;
+			return nonjtadatasource.getDataSource();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

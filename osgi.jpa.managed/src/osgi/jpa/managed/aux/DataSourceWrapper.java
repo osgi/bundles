@@ -1,6 +1,6 @@
 package osgi.jpa.managed.aux;
 
-import java.io.*;
+import java.lang.reflect.*;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -14,14 +14,16 @@ import javax.transaction.*;
  * connections that are obtained through this object and ensure that non of the
  * transaction methods are called on the connection in that case.
  */
-class DataSourceWrapper implements DataSource {
+class DataSourceWrapper implements InvocationHandler {
 
-	private final XADataSource							xaDataSource;
-	private final TransactionManager					transactionManager;
-	private final boolean								transactionMode;
-	private final Map<Transaction, TransactionSession>	xaConnections	= new ConcurrentHashMap<Transaction, TransactionSession>();
-	private final JPABridgeLogMessages					msgs;
-	private final Set<Connection>						connections		= Collections.synchronizedSet( new HashSet<Connection>());
+	private final XADataSource xaDataSource;
+	private final TransactionManager transactionManager;
+	private final boolean transactionMode;
+	private final Map<Transaction, TransactionSession> xaConnections = new ConcurrentHashMap<Transaction, TransactionSession>();
+	private final JPABridgeLogMessages msgs;
+	private final Set<Connection> connections = Collections
+			.synchronizedSet(new HashSet<Connection>());
+	private DataSource datasource;
 
 	/**
 	 * A TransactionSession is created when a XAConnection is used in a
@@ -30,9 +32,9 @@ class DataSourceWrapper implements DataSource {
 	 * transaction.
 	 */
 	class TransactionSession {
-		final XAConnection		xaConnection;
-		final Set<Connection>	connections	= new HashSet<Connection>();
-		final Transaction		transaction;
+		final XAConnection xaConnection;
+		final Set<Connection> connections = new HashSet<Connection>();
+		final Transaction transaction;
 
 		TransactionSession(Transaction transaction, XAConnection xaConnection)
 				throws Exception {
@@ -41,6 +43,7 @@ class DataSourceWrapper implements DataSource {
 			transaction.enlistResource(xaConnection.getXAResource());
 		}
 
+		@SuppressWarnings("unused")
 		public Connection getConnection() throws SQLException {
 			Connection connection = xaConnection.getConnection();
 			connections.add(connection);
@@ -58,6 +61,11 @@ class DataSourceWrapper implements DataSource {
 				public void setAutoCommit(boolean autoCommit)
 						throws SQLException {
 					throw new UnsupportedOperationException("jta transaction");
+				}
+
+				public Connection getConnection() {
+					// TODO Auto-generated method stub
+					return null;
 				}
 
 				public boolean getAutoCommit() throws SQLException {
@@ -78,7 +86,7 @@ class DataSourceWrapper implements DataSource {
 					// Do not close the connection until the end of
 					// of the commit.
 				}
-			};
+			}.getConnection();
 		}
 
 		public void close(int status) throws Exception {
@@ -94,13 +102,33 @@ class DataSourceWrapper implements DataSource {
 		this.xaDataSource = ds;
 		this.transactionMode = transactionMode;
 		this.msgs = msgs;
+		this.datasource = (DataSource) Proxy.newProxyInstance(getClass()
+				.getClassLoader(), new Class[] { DataSource.class }, this);
 	}
 
+	@Override
+	public Object invoke(Object target, Method method, Object[] args)
+			throws Throwable {
+		if (method.getName().equals("getConnection")) // getConnection()/getConnection(user,password)
+			return getConnection();
+
+		if (method.getName().equals("close") && args.length == 0)
+			close();
+
+		return method.invoke(target, args);
+	}
+
+	public DataSource getDataSource() {
+		return datasource;
+	}
+	
 	//
 	// Close any connections outside a transaction
+	//
+
 	public void close() {
 		System.out.println("Close all connections " + connections);
-		for ( Connection c : connections ) {
+		for (Connection c : connections) {
 			try {
 				c.close();
 			} catch (SQLException e) {
@@ -108,7 +136,7 @@ class DataSourceWrapper implements DataSource {
 			}
 		}
 	}
-	@Override
+
 	public Connection getConnection() throws SQLException {
 
 		//
@@ -210,6 +238,7 @@ class DataSourceWrapper implements DataSource {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private Connection add(final Connection connection) {
 		System.out.println("Add " + connection);
 		connections.add(connection);
@@ -218,7 +247,7 @@ class DataSourceWrapper implements DataSource {
 				System.out.println("close " + connection);
 				connections.remove(connection);
 			}
-		};
+		}.getConnection();
 	}
 
 	/**
@@ -229,284 +258,39 @@ class DataSourceWrapper implements DataSource {
 	}
 
 	//
-	// Delegate to our XA Data Source
-	//
-
-	@Override
-	public PrintWriter getLogWriter() throws SQLException {
-		return xaDataSource.getLogWriter();
-	}
-
-	@Override
-	public void setLogWriter(PrintWriter out) throws SQLException {
-		xaDataSource.setLogWriter(out);
-	}
-
-	@Override
-	public void setLoginTimeout(int seconds) throws SQLException {
-		xaDataSource.setLoginTimeout(seconds);
-	}
-
-	@Override
-	public int getLoginTimeout() throws SQLException {
-		return xaDataSource.getLoginTimeout();
-	}
-
-	//
-	// Have no idea what those wrap methods do, sounds
-	// very fishy
-	//
-
-	@Override
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		if (iface.isAssignableFrom(XADataSource.class))
-			iface.cast(xaDataSource);
-		throw new SQLException("Cannot unwrap to " + iface);
-	}
-
-	@Override
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return iface.isAssignableFrom(XADataSource.class);
-	}
-
-	@Override
-	public Connection getConnection(String username, String password)
-			throws SQLException {
-		return getConnection();
-	}
-
-	//
 	// Full Connection delegator kept separate to increase readability
 	// of main code.
 	//
 
-	static class ConnectionWrapper implements Connection {
-		Connection	delegate;
+	static class ConnectionWrapper implements InvocationHandler {
+		protected Connection delegate;
+		private Connection connection;
 
 		ConnectionWrapper(Connection delegate) {
 			this.delegate = delegate;
+			this.connection = (Connection) Proxy.newProxyInstance(getClass()
+					.getClassLoader(), new Class[] { Connection.class }, this);
 		}
 
-		public <T> T unwrap(Class<T> iface) throws SQLException {
-			return delegate.unwrap(iface);
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args)
+				throws Throwable {
+			try {
+				// TODO Bit inefficient, should work for now
+				Method m = getClass().getMethod(method.getName(),
+						method.getParameterTypes());
+				return m.invoke(delegate, args);
+			} catch (NoSuchMethodException e) {
+				return method.invoke(delegate, args);
+			} catch (InvocationTargetException ite) {
+				throw ite.getTargetException();
+			}
 		}
 
-		public boolean isWrapperFor(Class<?> iface) throws SQLException {
-			return delegate.isWrapperFor(iface);
+		public Connection getConnection() {
+			return connection;
 		}
-
-		public Statement createStatement() throws SQLException {
-			return delegate.createStatement();
-		}
-
-		public PreparedStatement prepareStatement(String sql)
-				throws SQLException {
-			return delegate.prepareStatement(sql);
-		}
-
-		public CallableStatement prepareCall(String sql) throws SQLException {
-			return delegate.prepareCall(sql);
-		}
-
-		public String nativeSQL(String sql) throws SQLException {
-			return delegate.nativeSQL(sql);
-		}
-
-		public void setAutoCommit(boolean autoCommit) throws SQLException {
-			delegate.setAutoCommit(autoCommit);
-		}
-
-		public boolean getAutoCommit() throws SQLException {
-			return delegate.getAutoCommit();
-		}
-
-		public void commit() throws SQLException {
-			delegate.commit();
-		}
-
-		public void rollback() throws SQLException {
-			delegate.rollback();
-		}
-
-		public void close() throws SQLException {
-				delegate.close();
-		}
-
-		public boolean isClosed() throws SQLException {
-			return delegate.isClosed();
-		}
-
-		public DatabaseMetaData getMetaData() throws SQLException {
-			return delegate.getMetaData();
-		}
-
-		public void setReadOnly(boolean readOnly) throws SQLException {
-			delegate.setReadOnly(readOnly);
-		}
-
-		public boolean isReadOnly() throws SQLException {
-			return delegate.isReadOnly();
-		}
-
-		public void setCatalog(String catalog) throws SQLException {
-			delegate.setCatalog(catalog);
-		}
-
-		public String getCatalog() throws SQLException {
-			return delegate.getCatalog();
-		}
-
-		public void setTransactionIsolation(int level) throws SQLException {
-			delegate.setTransactionIsolation(level);
-		}
-
-		public int getTransactionIsolation() throws SQLException {
-			return delegate.getTransactionIsolation();
-		}
-
-		public SQLWarning getWarnings() throws SQLException {
-			return delegate.getWarnings();
-		}
-
-		public void clearWarnings() throws SQLException {
-			delegate.clearWarnings();
-		}
-
-		public Statement createStatement(int resultSetType,
-				int resultSetConcurrency) throws SQLException {
-			return delegate
-					.createStatement(resultSetType, resultSetConcurrency);
-		}
-
-		public PreparedStatement prepareStatement(String sql,
-				int resultSetType, int resultSetConcurrency)
-				throws SQLException {
-			return delegate.prepareStatement(sql, resultSetType,
-					resultSetConcurrency);
-		}
-
-		public CallableStatement prepareCall(String sql, int resultSetType,
-				int resultSetConcurrency) throws SQLException {
-			return delegate.prepareCall(sql, resultSetType,
-					resultSetConcurrency);
-		}
-
-		public Map<String, Class<?>> getTypeMap() throws SQLException {
-			return delegate.getTypeMap();
-		}
-
-		public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-			delegate.setTypeMap(map);
-		}
-
-		public void setHoldability(int holdability) throws SQLException {
-			delegate.setHoldability(holdability);
-		}
-
-		public int getHoldability() throws SQLException {
-			return delegate.getHoldability();
-		}
-
-		public Savepoint setSavepoint() throws SQLException {
-			return delegate.setSavepoint();
-		}
-
-		public Savepoint setSavepoint(String name) throws SQLException {
-			return delegate.setSavepoint(name);
-		}
-
-		public void rollback(Savepoint savepoint) throws SQLException {
-			delegate.rollback(savepoint);
-		}
-
-		public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-			delegate.releaseSavepoint(savepoint);
-		}
-
-		public Statement createStatement(int resultSetType,
-				int resultSetConcurrency, int resultSetHoldability)
-				throws SQLException {
-			return delegate.createStatement(resultSetType,
-					resultSetConcurrency, resultSetHoldability);
-		}
-
-		public PreparedStatement prepareStatement(String sql,
-				int resultSetType, int resultSetConcurrency,
-				int resultSetHoldability) throws SQLException {
-			return delegate.prepareStatement(sql, resultSetType,
-					resultSetConcurrency, resultSetHoldability);
-		}
-
-		public CallableStatement prepareCall(String sql, int resultSetType,
-				int resultSetConcurrency, int resultSetHoldability)
-				throws SQLException {
-			return delegate.prepareCall(sql, resultSetType,
-					resultSetConcurrency, resultSetHoldability);
-		}
-
-		public PreparedStatement prepareStatement(String sql,
-				int autoGeneratedKeys) throws SQLException {
-			return delegate.prepareStatement(sql, autoGeneratedKeys);
-		}
-
-		public PreparedStatement prepareStatement(String sql,
-				int[] columnIndexes) throws SQLException {
-			return delegate.prepareStatement(sql, columnIndexes);
-		}
-
-		public PreparedStatement prepareStatement(String sql,
-				String[] columnNames) throws SQLException {
-			return delegate.prepareStatement(sql, columnNames);
-		}
-
-		public Clob createClob() throws SQLException {
-			return delegate.createClob();
-		}
-
-		public Blob createBlob() throws SQLException {
-			return delegate.createBlob();
-		}
-
-		public NClob createNClob() throws SQLException {
-			return delegate.createNClob();
-		}
-
-		public SQLXML createSQLXML() throws SQLException {
-			return delegate.createSQLXML();
-		}
-
-		public boolean isValid(int timeout) throws SQLException {
-			return delegate.isValid(timeout);
-		}
-
-		public void setClientInfo(String name, String value)
-				throws SQLClientInfoException {
-			delegate.setClientInfo(name, value);
-		}
-
-		public void setClientInfo(Properties properties)
-				throws SQLClientInfoException {
-			delegate.setClientInfo(properties);
-		}
-
-		public String getClientInfo(String name) throws SQLException {
-			return delegate.getClientInfo(name);
-		}
-
-		public Properties getClientInfo() throws SQLException {
-			return delegate.getClientInfo();
-		}
-
-		public Array createArrayOf(String typeName, Object[] elements)
-				throws SQLException {
-			return delegate.createArrayOf(typeName, elements);
-		}
-
-		public Struct createStruct(String typeName, Object[] attributes)
-				throws SQLException {
-			return delegate.createStruct(typeName, attributes);
-		}
-
 	}
+
 
 }
