@@ -1,18 +1,16 @@
 package osgi.jdbc.managed.aux;
 
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import javax.sql.XAConnection;
-import javax.sql.XADataSource;
+import javax.sql.*;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.framework.*;
+import org.osgi.service.jdbc.*;
 
 /**
  * Whitebox (arguably simplistic so far) test for the XADataSourceFactory
@@ -27,6 +25,8 @@ public class XADataSourceFactoryTest extends TestCase {
 
 		DataSourceFactory dsf = mock(DataSourceFactory.class);
 		XADataSource ds = mock(XADataSource.class);
+		BundleContext context = mock(BundleContext.class);
+		
 		XAConnection conn = mock(XAConnection.class);
 
 		when(
@@ -39,9 +39,9 @@ public class XADataSourceFactoryTest extends TestCase {
 
 		Map<String, Object> props = new HashMap<String, Object>();
 		props.put(DataSourceFactory.JDBC_URL, JDBC_TEST);
-		xad.activate(props);
+		xad.activate(context,props);
 
-		XAConnection xaConnection = xad.getXAConnection();
+		XAConnection xaConnection = ds.getXAConnection();
 
 		assertEquals(conn, xaConnection);
 	}

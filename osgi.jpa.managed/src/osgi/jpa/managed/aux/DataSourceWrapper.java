@@ -63,11 +63,6 @@ class DataSourceWrapper implements InvocationHandler {
 					throw new UnsupportedOperationException("jta transaction");
 				}
 
-				public Connection getConnection() {
-					// TODO Auto-generated method stub
-					return null;
-				}
-
 				public boolean getAutoCommit() throws SQLException {
 					throw new UnsupportedOperationException("jta transaction");
 				}
@@ -109,19 +104,23 @@ class DataSourceWrapper implements InvocationHandler {
 	@Override
 	public Object invoke(Object target, Method method, Object[] args)
 			throws Throwable {
-		if (method.getName().equals("getConnection")) // getConnection()/getConnection(user,password)
-			return getConnection();
+		try {
+			if (method.getName().equals("getConnection")) // getConnection()/getConnection(user,password)
+				return getLocalConnection();
 
-		if (method.getName().equals("close") && args.length == 0)
-			close();
+			if (method.getName().equals("close") && args.length == 0)
+				close();
 
-		return method.invoke(target, args);
+			return method.invoke(target, args);
+		} catch (InvocationTargetException ite) {
+			throw ite.getTargetException();
+		}
 	}
 
 	public DataSource getDataSource() {
 		return datasource;
 	}
-	
+
 	//
 	// Close any connections outside a transaction
 	//
@@ -137,7 +136,7 @@ class DataSourceWrapper implements InvocationHandler {
 		}
 	}
 
-	public Connection getConnection() throws SQLException {
+	public Connection getLocalConnection() throws SQLException {
 
 		//
 		// If we are not transaction, just return a connection
@@ -264,11 +263,11 @@ class DataSourceWrapper implements InvocationHandler {
 
 	static class ConnectionWrapper implements InvocationHandler {
 		protected Connection delegate;
-		private Connection connection;
+		private Connection proxy;
 
 		ConnectionWrapper(Connection delegate) {
 			this.delegate = delegate;
-			this.connection = (Connection) Proxy.newProxyInstance(getClass()
+			this.proxy = (Connection) Proxy.newProxyInstance(getClass()
 					.getClassLoader(), new Class[] { Connection.class }, this);
 		}
 
@@ -279,18 +278,21 @@ class DataSourceWrapper implements InvocationHandler {
 				// TODO Bit inefficient, should work for now
 				Method m = getClass().getMethod(method.getName(),
 						method.getParameterTypes());
-				return m.invoke(delegate, args);
+				return m.invoke(this, args);
 			} catch (NoSuchMethodException e) {
-				return method.invoke(delegate, args);
+				try {
+					return method.invoke(delegate, args);
+				} catch (InvocationTargetException t) {
+					throw t.getTargetException();
+				}
 			} catch (InvocationTargetException ite) {
 				throw ite.getTargetException();
 			}
 		}
 
 		public Connection getConnection() {
-			return connection;
+			return proxy;
 		}
 	}
-
 
 }
