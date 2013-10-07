@@ -12,25 +12,20 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 	private final EntityManagerFactory	emf;
 
 	public EntityManager createEntityManager() {
-		return createEntityManager(SynchronizationType.UNSYNCHRONIZED,
-				Collections.emptyMap());
+		return createEntityManager(SynchronizationType.UNSYNCHRONIZED, Collections.emptyMap());
 	}
 
 	public EntityManager createEntityManager(Map map) {
 		return emf.createEntityManager(SynchronizationType.UNSYNCHRONIZED, map);
 	}
 
-	public EntityManager createEntityManager(
-			SynchronizationType synchronizationType) {
-		return emf.createEntityManager(synchronizationType,
-				Collections.emptyMap());
+	public EntityManager createEntityManager(SynchronizationType synchronizationType) {
+		return emf.createEntityManager(synchronizationType, Collections.emptyMap());
 	}
 
-	public EntityManager createEntityManager(
-			final SynchronizationType synchronizationType, final Map map) {
+	public EntityManager createEntityManager(final SynchronizationType synchronizationType, final Map map) {
 		return new EntityManager() {
-			final EntityManager	em	= emf.createEntityManager(
-											synchronizationType, map);
+			final EntityManager	em	= emf.createEntityManager(synchronizationType, map);
 			final ClassLoader	cl	= getClass().getClassLoader();
 			ClassLoader			tccl;
 
@@ -47,7 +42,8 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				begin();
 				try {
 					em.persist(entity);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
@@ -56,7 +52,8 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				begin();
 				try {
 					return em.merge(entity);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
@@ -69,38 +66,39 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				begin();
 				try {
 					return em.find(entityClass, primaryKey);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
 
-			public <T> T find(Class<T> entityClass, Object primaryKey,
-					Map<String, Object> properties) {
+			public <T> T find(Class<T> entityClass, Object primaryKey, Map<String,Object> properties) {
 				begin();
 				try {
 					return em.find(entityClass, primaryKey, properties);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
 
-			public <T> T find(Class<T> entityClass, Object primaryKey,
-					LockModeType lockMode) {
+			public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
 				begin();
 				try {
 					return em.find(entityClass, primaryKey, lockMode);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
 
-			public <T> T find(Class<T> entityClass, Object primaryKey,
-					LockModeType lockMode, Map<String, Object> properties) {
+			public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode,
+					Map<String,Object> properties) {
 				begin();
 				try {
-					return em.find(entityClass, primaryKey, lockMode,
-							properties);
-				} finally {
+					return em.find(entityClass, primaryKey, lockMode, properties);
+				}
+				finally {
 					end();
 				}
 			}
@@ -109,7 +107,8 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				begin();
 				try {
 					return em.getReference(entityClass, primaryKey);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
@@ -130,8 +129,7 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				em.lock(entity, lockMode);
 			}
 
-			public void lock(Object entity, LockModeType lockMode,
-					Map<String, Object> properties) {
+			public void lock(Object entity, LockModeType lockMode, Map<String,Object> properties) {
 				em.lock(entity, lockMode, properties);
 			}
 
@@ -139,16 +137,18 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				begin();
 				try {
 					em.refresh(entity);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
 
-			public void refresh(Object entity, Map<String, Object> properties) {
+			public void refresh(Object entity, Map<String,Object> properties) {
 				begin();
 				try {
 					em.refresh(entity, properties);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
@@ -157,17 +157,18 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				begin();
 				try {
 					em.refresh(entity, lockMode);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
 
-			public void refresh(Object entity, LockModeType lockMode,
-					Map<String, Object> properties) {
+			public void refresh(Object entity, LockModeType lockMode, Map<String,Object> properties) {
 				begin();
 				try {
 					em.refresh(entity, lockMode, properties);
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
@@ -192,7 +193,7 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				em.setProperty(propertyName, value);
 			}
 
-			public Map<String, Object> getProperties() {
+			public Map<String,Object> getProperties() {
 				return em.getProperties();
 			}
 
@@ -212,8 +213,7 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				return em.createQuery(deleteQuery);
 			}
 
-			public <T> TypedQuery<T> createQuery(String qlString,
-					Class<T> resultClass) {
+			public <T> TypedQuery<T> createQuery(String qlString, Class<T> resultClass) {
 				return em.createQuery(qlString, resultClass);
 			}
 
@@ -221,8 +221,7 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				return em.createNamedQuery(name);
 			}
 
-			public <T> TypedQuery<T> createNamedQuery(String name,
-					Class<T> resultClass) {
+			public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
 				return em.createNamedQuery(name, resultClass);
 			}
 
@@ -234,31 +233,24 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				return em.createNativeQuery(sqlString, resultClass);
 			}
 
-			public Query createNativeQuery(String sqlString,
-					String resultSetMapping) {
+			public Query createNativeQuery(String sqlString, String resultSetMapping) {
 				return em.createNativeQuery(sqlString, resultSetMapping);
 			}
 
-			public StoredProcedureQuery createNamedStoredProcedureQuery(
-					String name) {
+			public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
 				return em.createNamedStoredProcedureQuery(name);
 			}
 
-			public StoredProcedureQuery createStoredProcedureQuery(
-					String procedureName) {
+			public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
 				return em.createStoredProcedureQuery(procedureName);
 			}
 
-			public StoredProcedureQuery createStoredProcedureQuery(
-					String procedureName, Class... resultClasses) {
-				return em.createStoredProcedureQuery(procedureName,
-						resultClasses);
+			public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+				return em.createStoredProcedureQuery(procedureName, resultClasses);
 			}
 
-			public StoredProcedureQuery createStoredProcedureQuery(
-					String procedureName, String... resultSetMappings) {
-				return em.createStoredProcedureQuery(procedureName,
-						resultSetMappings);
+			public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
+				return em.createStoredProcedureQuery(procedureName, resultSetMappings);
 			}
 
 			public void joinTransaction() {
@@ -301,7 +293,8 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				begin();
 				try {
 					return em.getMetamodel();
-				} finally {
+				}
+				finally {
 					end();
 				}
 			}
@@ -310,16 +303,15 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 				return em.createEntityGraph(rootType);
 			}
 
-			public EntityGraph<?> createEntityGraph(String graphName) {
+			public EntityGraph< ? > createEntityGraph(String graphName) {
 				return em.createEntityGraph(graphName);
 			}
 
-			public EntityGraph<?> getEntityGraph(String graphName) {
+			public EntityGraph< ? > getEntityGraph(String graphName) {
 				return em.getEntityGraph(graphName);
 			}
 
-			public <T> List<EntityGraph<? super T>> getEntityGraphs(
-					Class<T> entityClass) {
+			public <T> List<EntityGraph< ? super T>> getEntityGraphs(Class<T> entityClass) {
 				return em.getEntityGraphs(entityClass);
 			}
 
@@ -342,7 +334,7 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 		emf.close();
 	}
 
-	public Map<String, Object> getProperties() {
+	public Map<String,Object> getProperties() {
 		return emf.getProperties();
 	}
 
@@ -362,8 +354,7 @@ public class DelegatedEntityManagerFactory implements EntityManagerFactory {
 		return emf.unwrap(cls);
 	}
 
-	public <T> void addNamedEntityGraph(String graphName,
-			EntityGraph<T> entityGraph) {
+	public <T> void addNamedEntityGraph(String graphName, EntityGraph<T> entityGraph) {
 		emf.addNamedEntityGraph(graphName, entityGraph);
 	}
 

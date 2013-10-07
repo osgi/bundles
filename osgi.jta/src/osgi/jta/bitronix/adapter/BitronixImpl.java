@@ -18,8 +18,7 @@ public class BitronixImpl implements javax.transaction.TransactionManager {
 		delegate.begin();
 	}
 
-	public void commit() throws HeuristicMixedException,
-			HeuristicRollbackException, IllegalStateException,
+	public void commit() throws HeuristicMixedException, HeuristicRollbackException, IllegalStateException,
 			RollbackException, SecurityException, SystemException {
 		delegate.commit();
 	}
@@ -32,13 +31,11 @@ public class BitronixImpl implements javax.transaction.TransactionManager {
 		return delegate.getTransaction();
 	}
 
-	public void resume(Transaction arg0) throws IllegalStateException,
-			InvalidTransactionException, SystemException {
+	public void resume(Transaction arg0) throws IllegalStateException, InvalidTransactionException, SystemException {
 		delegate.resume(arg0);
 	}
 
-	public void rollback() throws IllegalStateException, SecurityException,
-			SystemException {
+	public void rollback() throws IllegalStateException, SecurityException, SystemException {
 		delegate.rollback();
 	}
 

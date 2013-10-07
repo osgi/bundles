@@ -16,14 +16,14 @@ import javax.transaction.*;
  */
 class DataSourceWrapper implements InvocationHandler {
 
-	private final XADataSource xaDataSource;
-	private final TransactionManager transactionManager;
-	private final boolean transactionMode;
-	private final Map<Transaction, TransactionSession> xaConnections = new ConcurrentHashMap<Transaction, TransactionSession>();
-	private final JPABridgeLogMessages msgs;
-	private final Set<Connection> connections = Collections
-			.synchronizedSet(new HashSet<Connection>());
-	private DataSource datasource;
+	private final XADataSource							xaDataSource;
+	private final TransactionManager					transactionManager;
+	private final boolean								transactionMode;
+	private final Map<Transaction,TransactionSession>	xaConnections	= new ConcurrentHashMap<Transaction,TransactionSession>();
+	private final JPABridgeLogMessages					msgs;
+	private final Set<Connection>						connections		= Collections
+																				.synchronizedSet(new HashSet<Connection>());
+	private DataSource									datasource;
 
 	/**
 	 * A TransactionSession is created when a XAConnection is used in a
@@ -32,12 +32,11 @@ class DataSourceWrapper implements InvocationHandler {
 	 * transaction.
 	 */
 	class TransactionSession {
-		final XAConnection xaConnection;
-		final Set<Connection> connections = new HashSet<Connection>();
-		final Transaction transaction;
+		final XAConnection		xaConnection;
+		final Set<Connection>	connections	= new HashSet<Connection>();
+		final Transaction		transaction;
 
-		TransactionSession(Transaction transaction, XAConnection xaConnection)
-				throws Exception {
+		TransactionSession(Transaction transaction, XAConnection xaConnection) throws Exception {
 			this.transaction = transaction;
 			this.xaConnection = xaConnection;
 			transaction.enlistResource(xaConnection.getXAResource());
@@ -58,8 +57,7 @@ class DataSourceWrapper implements InvocationHandler {
 			//
 
 			return new ConnectionWrapper(connection) {
-				public void setAutoCommit(boolean autoCommit)
-						throws SQLException {
+				public void setAutoCommit(boolean autoCommit) throws SQLException {
 					throw new UnsupportedOperationException("jta transaction");
 				}
 
@@ -76,8 +74,7 @@ class DataSourceWrapper implements InvocationHandler {
 				}
 
 				public void close() throws SQLException {
-					msgs.step("close on connection due to jta ignored "
-							+ delegate);
+					msgs.step("close on connection due to jta ignored " + delegate);
 					// Do not close the connection until the end of
 					// of the commit.
 				}
@@ -91,19 +88,18 @@ class DataSourceWrapper implements InvocationHandler {
 		}
 	}
 
-	public DataSourceWrapper(TransactionManager tm, XADataSource ds,
-			boolean transactionMode, JPABridgeLogMessages msgs) {
+	public DataSourceWrapper(TransactionManager tm, XADataSource ds, boolean transactionMode, JPABridgeLogMessages msgs) {
 		this.transactionManager = tm;
 		this.xaDataSource = ds;
 		this.transactionMode = transactionMode;
 		this.msgs = msgs;
-		this.datasource = (DataSource) Proxy.newProxyInstance(getClass()
-				.getClassLoader(), new Class[] { DataSource.class }, this);
+		this.datasource = (DataSource) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {
+			DataSource.class
+		}, this);
 	}
 
 	@Override
-	public Object invoke(Object target, Method method, Object[] args)
-			throws Throwable {
+	public Object invoke(Object target, Method method, Object[] args) throws Throwable {
 		try {
 			if (method.getName().equals("getConnection")) // getConnection()/getConnection(user,password)
 				return getLocalConnection();
@@ -112,7 +108,8 @@ class DataSourceWrapper implements InvocationHandler {
 				close();
 
 			return method.invoke(target, args);
-		} catch (InvocationTargetException ite) {
+		}
+		catch (InvocationTargetException ite) {
 			throw ite.getTargetException();
 		}
 	}
@@ -130,7 +127,8 @@ class DataSourceWrapper implements InvocationHandler {
 		for (Connection c : connections) {
 			try {
 				c.close();
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				// ignore
 			}
 		}
@@ -189,8 +187,7 @@ class DataSourceWrapper implements InvocationHandler {
 			// transaction. Create a session to track the
 			// connections created in this transaction
 			//
-			session = new TransactionSession(transaction,
-					xaDataSource.getXAConnection());
+			session = new TransactionSession(transaction, xaDataSource.getXAConnection());
 
 			xaConnections.put(transaction, session);
 
@@ -204,35 +201,32 @@ class DataSourceWrapper implements InvocationHandler {
 			// by registering a callback with the transaction.
 			//
 
-			transactionManager.getTransaction().registerSynchronization(
-					new Synchronization() {
+			transactionManager.getTransaction().registerSynchronization(new Synchronization() {
 
-						@Override
-						public void beforeCompletion() {
-						}
+				@Override
+				public void beforeCompletion() {}
 
-						@Override
-						public void afterCompletion(int status) {
-							try {
-								msgs.step("close transaction " + transaction
-										+ " " + status + " "
-										+ Thread.currentThread());
-								session0.close(status);
-							} catch (Exception e) {
-								// Ignore since these errors
-								// should have been handled during
-								// the commit phase of the transaction
-								msgs.failed(
-										"closing connection after transaction close",
-										e);
-							}
-						}
-					});
+				@Override
+				public void afterCompletion(int status) {
+					try {
+						msgs.step("close transaction " + transaction + " " + status + " " + Thread.currentThread());
+						session0.close(status);
+					}
+					catch (Exception e) {
+						// Ignore since these errors
+						// should have been handled during
+						// the commit phase of the transaction
+						msgs.failed("closing connection after transaction close", e);
+					}
+				}
+			});
 
 			return session0.getConnection();
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			throw e;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new SQLException("DataSourceWrapper:getConnection", e);
 		}
 	}
@@ -262,30 +256,32 @@ class DataSourceWrapper implements InvocationHandler {
 	//
 
 	static class ConnectionWrapper implements InvocationHandler {
-		protected Connection delegate;
-		private Connection proxy;
+		protected Connection	delegate;
+		private Connection		proxy;
 
 		ConnectionWrapper(Connection delegate) {
 			this.delegate = delegate;
-			this.proxy = (Connection) Proxy.newProxyInstance(getClass()
-					.getClassLoader(), new Class[] { Connection.class }, this);
+			this.proxy = (Connection) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {
+				Connection.class
+			}, this);
 		}
 
 		@Override
-		public Object invoke(Object proxy, Method method, Object[] args)
-				throws Throwable {
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			try {
 				// TODO Bit inefficient, should work for now
-				Method m = getClass().getMethod(method.getName(),
-						method.getParameterTypes());
+				Method m = getClass().getMethod(method.getName(), method.getParameterTypes());
 				return m.invoke(this, args);
-			} catch (NoSuchMethodException e) {
+			}
+			catch (NoSuchMethodException e) {
 				try {
 					return method.invoke(delegate, args);
-				} catch (InvocationTargetException t) {
+				}
+				catch (InvocationTargetException t) {
 					throw t.getTargetException();
 				}
-			} catch (InvocationTargetException ite) {
+			}
+			catch (InvocationTargetException ite) {
 				throw ite.getTargetException();
 			}
 		}

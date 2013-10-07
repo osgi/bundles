@@ -15,22 +15,18 @@ import org.osgi.framework.wiring.*;
 import osgi.jpa.managed.api.*;
 
 @SuppressWarnings("rawtypes")
-public class DatanucleusWrapper implements PersistenceProvider,JPABridgePersistenceProvider {
+public class DatanucleusWrapper implements PersistenceProvider, JPABridgePersistenceProvider {
 	private PersistenceProvider	pp;
 
-	public DatanucleusWrapper(
-			PersistenceProvider pp) {
+	public DatanucleusWrapper(PersistenceProvider pp) {
 		this.pp = pp;
 	}
 
-
 	@Override
-	public EntityManagerFactory createEntityManagerFactory(String emName,
-			Map map) {
+	public EntityManagerFactory createEntityManagerFactory(String emName, Map map) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	public int hashCode() {
 		return pp.hashCode();
@@ -41,20 +37,16 @@ public class DatanucleusWrapper implements PersistenceProvider,JPABridgePersiste
 	}
 
 	@SuppressWarnings("unchecked")
-	public EntityManagerFactory createContainerEntityManagerFactory(
-			PersistenceUnitInfo info, Map properties) {
+	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
 		properties.put("datanucleus.jpa.addClassTransformer", "false");
-		properties.put("datanucleus.plugin.pluginRegistryClassName",
-				"org.datanucleus.plugin.OSGiPluginRegistry");
-		
-		info.addTransformer(new ClassTransformer() {
-			
-			@Override
-			public byte[] transform(ClassLoader loader, String className,
-					Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
-					byte[] classfileBuffer) throws IllegalClassFormatException {
+		properties.put("datanucleus.plugin.pluginRegistryClassName", "org.datanucleus.plugin.OSGiPluginRegistry");
 
-				
+		info.addTransformer(new ClassTransformer() {
+
+			@Override
+			public byte[] transform(ClassLoader loader, String className, Class< ? > classBeingRedefined,
+					ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -93,15 +85,13 @@ public class DatanucleusWrapper implements PersistenceProvider,JPABridgePersiste
 
 	@Override
 	public ClassLoader getClassLoader(Bundle persistentUnitBundle) {
-		ClassLoader cla = persistentUnitBundle.adapt(BundleWiring.class)
-				.getClassLoader();
+		ClassLoader cla = persistentUnitBundle.adapt(BundleWiring.class).getClassLoader();
 		final ClassLoader clb = getClass().getClassLoader();
 
 		return new ClassLoader(cla) {
 
 			@Override
-			protected Class<?> findClass(String className)
-					throws ClassNotFoundException {
+			protected Class< ? > findClass(String className) throws ClassNotFoundException {
 
 				return clb.loadClass(className);
 			}
@@ -112,8 +102,7 @@ public class DatanucleusWrapper implements PersistenceProvider,JPABridgePersiste
 			}
 
 			@Override
-			protected Enumeration<URL> findResources(String resource)
-					throws IOException {
+			protected Enumeration<URL> findResources(String resource) throws IOException {
 				return clb.getResources(resource);
 			}
 		};

@@ -14,9 +14,9 @@ import aQute.lib.collections.*;
  * This class is a WeavingHook service which is used to handle the transformers.
  */
 class TransformersHook implements WeavingHook {
-	private static final ClassTransformer[]				empty			= new ClassTransformer[0];
-	private final MultiMap<Bundle, ClassTransformer>	transformers	= new MultiMap<Bundle, ClassTransformer>();
-	private final List<String>							imports;
+	private static final ClassTransformer[]			empty			= new ClassTransformer[0];
+	private final MultiMap<Bundle,ClassTransformer>	transformers	= new MultiMap<Bundle,ClassTransformer>();
+	private final List<String>						imports;
 
 	TransformersHook(List<String> imports) {
 		this.imports = imports;
@@ -37,21 +37,20 @@ class TransformersHook implements WeavingHook {
 					return;
 				trfs = list.toArray(empty);
 			}
-			System.out.println("transforming " + Arrays.toString(trfs) + " "
-					+ clazz);
+			System.out.println("transforming " + Arrays.toString(trfs) + " " + clazz);
 			for (ClassTransformer ctf : trfs) {
 				if (ctf != null) {
-					ctf.transform(wiring.getClassLoader(),
-							clazz.getClassName(), clazz.getDefinedClass(),
+					ctf.transform(wiring.getClassLoader(), clazz.getClassName(), clazz.getDefinedClass(),
 							clazz.getProtectionDomain(), clazz.getBytes());
 				}
 
 			}
-			
+
 			if (!imports.isEmpty())
 				clazz.getDynamicImports().addAll(imports);
-			
-		} catch (Exception e) {
+
+		}
+		catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

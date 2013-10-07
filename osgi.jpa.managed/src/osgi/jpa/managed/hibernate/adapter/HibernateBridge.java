@@ -15,16 +15,14 @@ import aQute.bnd.annotation.component.*;
 
 /**
  * Create the persistence provider for hibernate and delegate all the messages
- * to it.
- * 
- * SPEC: 
+ * to it. SPEC:
  */
-@Component( provide=PersistenceProvider.class, properties="service.vendor=Hibernate")
+@Component(provide = PersistenceProvider.class, properties = "service.vendor=Hibernate")
 @SuppressWarnings("rawtypes")
 public class HibernateBridge implements PersistenceProvider, JPABridgePersistenceProvider {
 	private HibernatePersistenceProvider	pp;
 	private TransactionManager				tm;
-	
+
 	@Activate
 	public void activate(BundleContext context) {
 		pp = new org.hibernate.jpa.HibernatePersistenceProvider();
@@ -35,15 +33,13 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 		return pp.hashCode();
 	}
 
-	public EntityManagerFactory createEntityManagerFactory(
-			String persistenceUnitName, Map properties) {
+	public EntityManagerFactory createEntityManagerFactory(String persistenceUnitName, Map properties) {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		try {
-			Thread.currentThread().setContextClassLoader(
-					getClass().getClassLoader());
-			return pp.createEntityManagerFactory(persistenceUnitName,
-					properties);
-		} finally {
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+			return pp.createEntityManagerFactory(persistenceUnitName, properties);
+		}
+		finally {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
 	}
@@ -53,21 +49,20 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 	}
 
 	@SuppressWarnings("unchecked")
-	public EntityManagerFactory createContainerEntityManagerFactory(
-			PersistenceUnitInfo info, Map properties) {
+	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		try {
 			info.addTransformer(null);
-			
-			Thread.currentThread().setContextClassLoader(
-					getClass().getClassLoader());
-			properties.put("hibernate.jdbc.use_get_generated_keys","true");
+
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+			properties.put("hibernate.jdbc.use_get_generated_keys", "true");
 			properties.put("hibernate.hbm2ddl.auto", "create");
-			 final EntityManagerFactory emf = pp.createContainerEntityManagerFactory(info, properties);
-			 return new DelegatedEntityManagerFactory(emf) {
-				 
-			}; 
-		} finally {
+			final EntityManagerFactory emf = pp.createContainerEntityManagerFactory(info, properties);
+			return new DelegatedEntityManagerFactory(emf) {
+
+			};
+		}
+		finally {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
 	}
@@ -97,13 +92,14 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 	}
 
 	/**
-	 * Hibernate could seemingly live with a null URL ... and it crashed on an OSGi URL ...
+	 * Hibernate could seemingly live with a null URL ... and it crashed on an
+	 * OSGi URL ...
 	 */
 	@Override
 	public URL getRootUrl(Bundle b, String location) {
 		return null;
 	}
-	
+
 	@Reference
 	void setTM(TransactionManager tm) {
 		this.tm = tm;

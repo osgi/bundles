@@ -1,14 +1,13 @@
 package osgi.jdbc.managed.aux;
 
-import java.util.Properties;
+import java.util.*;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+import org.hamcrest.*;
 
 public class ContainsMatcher extends BaseMatcher<Properties> {
 
-	private String value;
-	private String key;
+	private String	value;
+	private String	key;
 
 	public ContainsMatcher(String key, String value) {
 		this.key = key;
@@ -23,7 +22,6 @@ public class ContainsMatcher extends BaseMatcher<Properties> {
 	}
 
 	@Override
-	public void describeTo(Description arg0) {
-	}
+	public void describeTo(Description arg0) {}
 
 }

@@ -26,16 +26,13 @@ public class JtaPlatformProviderImpl implements JtaPlatformProvider {
 				return new UserTransaction() {
 
 					@Override
-					public void begin() throws NotSupportedException,
-							SystemException {
+					public void begin() throws NotSupportedException, SystemException {
 						transactionManager.begin();
 					}
 
 					@Override
-					public void commit() throws HeuristicMixedException,
-							HeuristicRollbackException, IllegalStateException,
-							RollbackException, SecurityException,
-							SystemException {
+					public void commit() throws HeuristicMixedException, HeuristicRollbackException,
+							IllegalStateException, RollbackException, SecurityException, SystemException {
 						transactionManager.commit();
 					}
 
@@ -45,28 +42,24 @@ public class JtaPlatformProviderImpl implements JtaPlatformProvider {
 					}
 
 					@Override
-					public void rollback() throws IllegalStateException,
-							SecurityException, SystemException {
+					public void rollback() throws IllegalStateException, SecurityException, SystemException {
 						transactionManager.rollback();
 					}
 
 					@Override
-					public void setRollbackOnly() throws IllegalStateException,
-							SystemException {
+					public void setRollbackOnly() throws IllegalStateException, SystemException {
 						transactionManager.setRollbackOnly();
 					}
 
 					@Override
-					public void setTransactionTimeout(int seconds)
-							throws SystemException {
+					public void setTransactionTimeout(int seconds) throws SystemException {
 						transactionManager.setTransactionTimeout(seconds);
 					}
-					
+
 				};
 			}
-			
+
 		};
 	}
-
 
 }

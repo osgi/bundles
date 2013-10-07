@@ -40,8 +40,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	 * @param xml
 	 *            The xml of the persistence unit
 	 */
-	PersistenceUnitInfoImpl(PersistentBundle bundle, PersistenceUnit xml)
-			throws Exception {
+	PersistenceUnitInfoImpl(PersistentBundle bundle, PersistenceUnit xml) throws Exception {
 		this.sourceBundle = bundle;
 		this.persistenceUnitXml = xml;
 		this.location = (String) getProperties().get("location");
@@ -52,8 +51,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	 */
 	void shutdown() {
 		for (ClassTransformer classTransformer : transformers) {
-			sourceBundle.bridge.transformersHook.unregister(
-					sourceBundle.bundle, classTransformer);
+			sourceBundle.bridge.transformersHook.unregister(sourceBundle.bundle, classTransformer);
 		}
 	}
 
@@ -65,11 +63,11 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	@Override
 	public void addTransformer(ClassTransformer transformer) {
 		try {
-			sourceBundle.bridge.transformersHook.register(sourceBundle.bundle,
-					transformer);
+			sourceBundle.bridge.transformersHook.register(sourceBundle.bundle, transformer);
 			if (transformer != null)
 				transformers.add(transformer);
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			e.printStackTrace();
 			throw e;
 		}
@@ -90,8 +88,9 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	@Override
 	public synchronized ClassLoader getClassLoader() {
 		sourceBundle.bridge.log.step("classloader " + getPersistenceUnitName());
-		if ( sourceBundle.bridge.persistenceProvider instanceof JPABridgePersistenceProvider) {
-			ClassLoader cl = ((JPABridgePersistenceProvider)sourceBundle.bridge.persistenceProvider).getClassLoader(sourceBundle.bundle);
+		if (sourceBundle.bridge.persistenceProvider instanceof JPABridgePersistenceProvider) {
+			ClassLoader cl = ((JPABridgePersistenceProvider) sourceBundle.bridge.persistenceProvider)
+					.getClassLoader(sourceBundle.bundle);
 			if (cl != null)
 				return cl;
 		}
@@ -109,7 +108,8 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 				urls.add(new URL(url));
 			}
 			return urls;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -126,13 +126,12 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 
 		try {
 			if (jtadatasource == null) {
-				jtadatasource = new DataSourceWrapper(
-						sourceBundle.bridge.transactionManager,
-						sourceBundle.bridge.xaDataSource, true,
-						sourceBundle.bridge.log);
+				jtadatasource = new DataSourceWrapper(sourceBundle.bridge.transactionManager,
+						sourceBundle.bridge.xaDataSource, true, sourceBundle.bridge.log);
 			}
 			return jtadatasource.getDataSource();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -175,8 +174,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 			// loader. Yuck.
 			//
 			@Override
-			protected Class<?> findClass(String className)
-					throws ClassNotFoundException {
+			protected Class< ? > findClass(String className) throws ClassNotFoundException {
 
 				//
 				// Use path of class, then get the resource
@@ -185,8 +183,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 				String path = className.replace('.', '/').concat(".class");
 				URL resource = getParent().getResource(path);
 				if (resource == null)
-					throw new ClassNotFoundException(className
-							+ " as resource " + path + " in " + getParent());
+					throw new ClassNotFoundException(className + " as resource " + path + " in " + getParent());
 
 				try {
 
@@ -201,9 +198,9 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 					IO.copy(resource.openStream(), bout);
 					byte[] buffer = bout.toByteArray();
 					return defineClass(className, buffer, 0, buffer.length);
-				} catch (Exception e) {
-					throw new ClassNotFoundException(className + " as resource"
-							+ path + " in " + getParent(), e);
+				}
+				catch (Exception e) {
+					throw new ClassNotFoundException(className + " as resource" + path + " in " + getParent(), e);
 				}
 			}
 
@@ -217,8 +214,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 			}
 
 			@Override
-			protected Enumeration<URL> findResources(String resource)
-					throws IOException {
+			protected Enumeration<URL> findResources(String resource) throws IOException {
 				return getParent().getResources(resource);
 			}
 
@@ -235,13 +231,12 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	public DataSource getNonJtaDataSource() {
 		try {
 			if (nonjtadatasource == null) {
-				nonjtadatasource = new DataSourceWrapper(
-						sourceBundle.bridge.transactionManager,
-						sourceBundle.bridge.xaDataSource, false,
-						sourceBundle.bridge.log);
+				nonjtadatasource = new DataSourceWrapper(sourceBundle.bridge.transactionManager,
+						sourceBundle.bridge.xaDataSource, false, sourceBundle.bridge.log);
 			}
 			return nonjtadatasource.getDataSource();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -256,7 +251,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 		PersistenceProvider pp = sourceBundle.bridge.persistenceProvider;
 		if (pp instanceof JPABridgePersistenceProvider) {
 			String className = ((JPABridgePersistenceProvider) pp).getPersistentProviderClassName();
-			if ( className != null)
+			if (className != null)
 				return className;
 		}
 		return sourceBundle.bridge.persistenceProvider.getClass().getName();
@@ -281,15 +276,14 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 		//
 		PersistenceProvider pp = sourceBundle.bridge.persistenceProvider;
 		if (pp instanceof JPABridgePersistenceProvider) {
-			URL rootUrl = ((JPABridgePersistenceProvider) pp).getRootUrl(
-					sourceBundle.bundle, location);
+			URL rootUrl = ((JPABridgePersistenceProvider) pp).getRootUrl(sourceBundle.bundle, location);
 			return rootUrl;
 		}
-		
+
 		//
 		// Make one that is OSGi based
 		//
-		
+
 		String loc = location;
 		int n = loc.lastIndexOf('/');
 		if (n > 0) {
@@ -304,7 +298,6 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	/*
 	 * TODO handle also version 2.1. This btw seems to have the same schema
 	 * exact for the version?
-	 * 
 	 * @see
 	 * javax.persistence.spi.PersistenceUnitInfo#getPersistenceXMLSchemaVersion
 	 * ()
@@ -320,8 +313,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	@Override
 	public Properties getProperties() {
 		Properties properties = new Properties();
-		if (persistenceUnitXml.getProperties() != null
-				&& persistenceUnitXml.getProperties().getProperty() != null)
+		if (persistenceUnitXml.getProperties() != null && persistenceUnitXml.getProperties().getProperty() != null)
 			for (Property p : persistenceUnitXml.getProperties().getProperty()) {
 				properties.put(p.getName(), p.getValue());
 			}
@@ -334,8 +326,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	 */
 	@Override
 	public SharedCacheMode getSharedCacheMode() {
-		PersistenceUnitCachingType sharedCacheMode = persistenceUnitXml
-				.getSharedCacheMode();
+		PersistenceUnitCachingType sharedCacheMode = persistenceUnitXml.getSharedCacheMode();
 		if (sharedCacheMode == null)
 			return null;
 
@@ -355,8 +346,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	 */
 	@Override
 	public ValidationMode getValidationMode() {
-		PersistenceUnitValidationModeType validationMode = persistenceUnitXml
-				.getValidationMode();
+		PersistenceUnitValidationModeType validationMode = persistenceUnitXml.getValidationMode();
 		if (validationMode == null)
 			return null;
 

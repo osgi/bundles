@@ -12,8 +12,8 @@ public class Domain {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	private long	id; // SPEC: this was a String in OpenJPA
-	private String name;
+	private long	id;	// SPEC: this was a String in OpenJPA
+	private String	name;
 
 	public long getId() {
 		return id;

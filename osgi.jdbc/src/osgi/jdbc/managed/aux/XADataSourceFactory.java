@@ -1,10 +1,6 @@
 package osgi.jdbc.managed.aux;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.sql.*;
 import java.util.*;
-import java.util.logging.*;
 
 import javax.sql.*;
 
@@ -25,8 +21,8 @@ import aQute.lib.converter.*;
 
 @Component(servicefactory = true, designateFactory = XADataSourceFactory.Config.class)
 public class XADataSourceFactory {
-	private DataSourceFactory dsf;
-	private XADataSource ds;
+	private DataSourceFactory	dsf;
+	private XADataSource		ds;
 
 	/**
 	 * The configuration interface. Specifies the
@@ -49,8 +45,8 @@ public class XADataSourceFactory {
 		String dataSourceFactory_target();
 	}
 
-	private Config config;
-	private ServiceRegistration<?> registration;
+	private Config						config;
+	private ServiceRegistration< ? >	registration;
 
 	/**
 	 * Awfully simple. Just use the Data Source Factory to create a Data Source.
@@ -61,8 +57,7 @@ public class XADataSourceFactory {
 	 * @throws Exception
 	 */
 	@Activate
-	void activate(BundleContext context, Map<String, Object> properties)
-			throws Exception {
+	void activate(BundleContext context, Map<String,Object> properties) throws Exception {
 		config = Converter.cnv(Config.class, properties);
 		assert config.url() != null;
 
@@ -72,13 +67,12 @@ public class XADataSourceFactory {
 
 		if (config.user() != null && config._password() != null) {
 			props.setProperty(DataSourceFactory.JDBC_USER, config.user());
-			props.setProperty(DataSourceFactory.JDBC_PASSWORD,
-					config._password());
+			props.setProperty(DataSourceFactory.JDBC_PASSWORD, config._password());
 		}
 
 		ds = dsf.createXADataSource(props);
-		registration = context.registerService(XADataSource.class.getName(),
-				ds, new Hashtable<String, Object>(properties));
+		registration = context.registerService(XADataSource.class.getName(), ds, new Hashtable<String,Object>(
+				properties));
 	}
 
 	@Deactivate

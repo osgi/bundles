@@ -16,14 +16,11 @@ import aQute.bnd.annotation.component.*;
 
 /**
  * Create the persistence provider for Eclipselink and delegate all the messages
- * to it.
- * 
- * SPEC:
+ * to it. SPEC:
  */
-@Component(provide = PersistenceProvider.class, properties="service.vendor=EclipseLink")
+@Component(provide = PersistenceProvider.class, properties = "service.vendor=EclipseLink")
 @SuppressWarnings("rawtypes")
-public class EclipselinkBridge implements PersistenceProvider,
-		JPABridgePersistenceProvider {
+public class EclipselinkBridge implements PersistenceProvider, JPABridgePersistenceProvider {
 	private org.eclipse.persistence.jpa.PersistenceProvider	pp;
 
 	@Activate
@@ -35,8 +32,7 @@ public class EclipselinkBridge implements PersistenceProvider,
 		return pp.hashCode();
 	}
 
-	public EntityManagerFactory createEntityManagerFactory(
-			String persistenceUnitName, Map properties) {
+	public EntityManagerFactory createEntityManagerFactory(String persistenceUnitName, Map properties) {
 		return pp.createEntityManagerFactory(persistenceUnitName, properties);
 	}
 
@@ -45,12 +41,10 @@ public class EclipselinkBridge implements PersistenceProvider,
 	}
 
 	@SuppressWarnings("unchecked")
-	public EntityManagerFactory createContainerEntityManagerFactory(
-			PersistenceUnitInfo info, Map properties) {
+	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
 		properties.put("eclipselink.logging.level", "FINEST");
 		properties.put("eclipselink.ddl-generation", "create-or-extend-tables");
-		properties.put("eclipselink.target-server",
-				EclipselinkTransactionController.class.getName());
+		properties.put("eclipselink.target-server", EclipselinkTransactionController.class.getName());
 		return pp.createContainerEntityManagerFactory(info, properties);
 	}
 
@@ -90,29 +84,27 @@ public class EclipselinkBridge implements PersistenceProvider,
 
 	@Override
 	public ClassLoader getClassLoader(Bundle persistentUnitBundle) {
-		 ClassLoader cla = persistentUnitBundle.adapt(BundleWiring.class).getClassLoader();
-		 final ClassLoader clb = getClass().getClassLoader();
+		ClassLoader cla = persistentUnitBundle.adapt(BundleWiring.class).getClassLoader();
+		final ClassLoader clb = getClass().getClassLoader();
 
-			return new ClassLoader(cla) {
+		return new ClassLoader(cla) {
 
-				@Override
-				protected Class<?> findClass(String className)
-						throws ClassNotFoundException {
+			@Override
+			protected Class< ? > findClass(String className) throws ClassNotFoundException {
 
-					return clb.loadClass(className);
-				}
+				return clb.loadClass(className);
+			}
 
-				@Override
-				protected URL findResource(String resource) {
-					return clb.getResource(resource);
-				}
+			@Override
+			protected URL findResource(String resource) {
+				return clb.getResource(resource);
+			}
 
-				@Override
-				protected Enumeration<URL> findResources(String resource)
-						throws IOException {
-					return clb.getResources(resource);
-				}
-			};
+			@Override
+			protected Enumeration<URL> findResources(String resource) throws IOException {
+				return clb.getResources(resource);
+			}
+		};
 	}
 
 	@Override

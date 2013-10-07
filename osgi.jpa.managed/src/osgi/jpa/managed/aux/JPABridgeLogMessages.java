@@ -18,7 +18,6 @@ interface JPABridgeLogMessages extends LogMessages {
 	WARNING locationWithoutPersistenceUnit(Bundle bundle, String location);
 
 	@Format("Bundle %s specifies a persistence unit %s but this persistence unit is invalid because of %s. The content is %s")
-	ERROR invalidPersistenceUnit(Bundle bundle, String location, String reason,
-			String xml);
+	ERROR invalidPersistenceUnit(Bundle bundle, String location, String reason, String xml);
 
 }

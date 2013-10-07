@@ -1,44 +1,29 @@
 package osgi.jpa.managed.aux;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
-import javax.persistence.spi.PersistenceProvider;
-import javax.sql.XADataSource;
-import javax.transaction.TransactionManager;
-import javax.xml.bind.JAXB;
+import javax.persistence.spi.*;
+import javax.sql.*;
+import javax.transaction.*;
+import javax.xml.bind.*;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleReference;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.framework.hooks.weaving.WeavingHook;
-import org.osgi.util.tracker.BundleTracker;
+import org.osgi.framework.*;
+import org.osgi.framework.hooks.weaving.*;
+import org.osgi.util.tracker.*;
 
-import osgi.jpa.managed.api.JPABridgePersistenceProvider;
-import v2_0.Persistence;
+import osgi.jpa.managed.api.*;
+import v2_0.*;
 import v2_0.Persistence.PersistenceUnit;
 import v2_0.Persistence.PersistenceUnit.Properties.Property;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
-import aQute.lib.converter.Converter;
-import aQute.libg.clauses.Clauses;
-import aQute.service.logger.Log;
+import aQute.bnd.annotation.component.*;
+import aQute.lib.converter.*;
+import aQute.libg.clauses.*;
+import aQute.service.logger.*;
 
 /**
  * This component bridges JPA, TransactionManager, and DataSourceFactory
@@ -58,7 +43,7 @@ public class JPAManager {
 	PersistenceProvider					persistenceProvider;
 	BundleTracker<PersistentBundle>		bundles;
 	JPABridgeLogMessages				log;
-	Map<String, Object>					bridgeProperties	= new HashMap<String, Object>();
+	Map<String,Object>					bridgeProperties	= new HashMap<String,Object>();
 	TransformersHook					transformersHook;
 	ServiceRegistration<WeavingHook>	transformersHookRegistration;
 
@@ -70,8 +55,7 @@ public class JPAManager {
 	Config	config;
 
 	@Activate
-	void activate(BundleContext context, Map<String, Object> props)
-			throws Exception {
+	void activate(BundleContext context, Map<String,Object> props) throws Exception {
 		this.context = context;
 		config = Converter.cnv(Config.class, props);
 
@@ -90,30 +74,28 @@ public class JPAManager {
 		// Track bundles with persistence units.
 		//
 
-		bundles = new BundleTracker<PersistentBundle>(context, Bundle.ACTIVE
-				+ Bundle.STARTING, null) {
+		bundles = new BundleTracker<PersistentBundle>(context, Bundle.ACTIVE + Bundle.STARTING, null) {
 
-			public PersistentBundle addingBundle(Bundle bundle,
-					BundleEvent event) {
+			public PersistentBundle addingBundle(Bundle bundle, BundleEvent event) {
 				try {
 					//
 					// Parse any persistence units, returns null (not tracked)
 					// when there is no PU
 					//
 					return parse(bundle);
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					e.printStackTrace();
 					log.bundleParseException(bundle, e);
 					return null;
 				}
 			}
 
-			public void removedBundle(Bundle bundle, BundleEvent event,
-					PersistentBundle put) {
+			public void removedBundle(Bundle bundle, BundleEvent event, PersistentBundle put) {
 				put.close();
 			}
 		};
-		
+
 		bundles.open();
 	}
 
@@ -137,42 +119,42 @@ public class JPAManager {
 
 	private List<String> getImports(PersistenceProvider pp) throws IOException {
 		//
-		// Check if this pp is a bridge that is aware of 
+		// Check if this pp is a bridge that is aware of
 		// what we're doing
 		//
-		if ( pp instanceof JPABridgePersistenceProvider) {
-			 List<String> wovenImports = ((JPABridgePersistenceProvider) pp).getWovenImports();
-			 if ( wovenImports != null)
-				 return wovenImports;
+		if (pp instanceof JPABridgePersistenceProvider) {
+			List<String> wovenImports = ((JPABridgePersistenceProvider) pp).getWovenImports();
+			if (wovenImports != null)
+				return wovenImports;
 		}
-		
+
 		//
 		// Get the pp's class's bundle's context
 		//
 		Bundle b;
-		if ( pp instanceof BundleReference) 
+		if (pp instanceof BundleReference)
 			b = ((BundleReference) pp).getBundle();
 		else
 			b = FrameworkUtil.getBundle(pp.getClass());
-		
+
 		if (b != null) {
 			//
 			// Get the import clauses
 			//
-			Clauses clauses = Clauses.parse((String)b.getHeaders().get("Export-Package"), null);
+			Clauses clauses = Clauses.parse((String) b.getHeaders().get("Export-Package"), null);
 			if (!clauses.isEmpty()) {
 				List<String> list = new ArrayList<String>();
-				for (Entry<String, Map<String, String>> e : clauses.entrySet()) {
+				for (Entry<String,Map<String,String>> e : clauses.entrySet()) {
 
 					//
 					// Create a new clause
 					//
 					StringBuilder sb = new StringBuilder();
 					sb.append(e.getKey());
-					for (Entry<String, String> ee : e.getValue().entrySet()) {
-						if ( ee.getKey().endsWith(":"))
+					for (Entry<String,String> ee : e.getValue().entrySet()) {
+						if (ee.getKey().endsWith(":"))
 							continue;
-						
+
 						sb.append(";").append(ee.getKey()).append("=");
 						String v = ee.getValue();
 						if (WORD.matcher(v).matches())
@@ -207,8 +189,7 @@ public class JPAManager {
 	 *         units
 	 */
 	PersistentBundle parse(Bundle bundle) throws Exception {
-		String metapersistence = (String) bundle.getHeaders().get(
-				META_PERSISTENCE);
+		String metapersistence = (String) bundle.getHeaders().get(META_PERSISTENCE);
 
 		if (metapersistence == null || metapersistence.trim().isEmpty())
 			return null;
@@ -236,15 +217,12 @@ public class JPAManager {
 			if (url == null) {
 				log.locationWithoutPersistenceUnit(bundle, location);
 			} else {
-				Persistence persistence = JAXB
-						.unmarshal(url, Persistence.class);
-				for (Persistence.PersistenceUnit pu : persistence
-						.getPersistenceUnit()) {
+				Persistence persistence = JAXB.unmarshal(url, Persistence.class);
+				for (Persistence.PersistenceUnit pu : persistence.getPersistenceUnit()) {
 
-					if (config.name() == null || config.name().trim().isEmpty()
-							|| config.name().equals("*")
+					if (config.name() == null || config.name().trim().isEmpty() || config.name().equals("*")
 							|| config.name().equals(pu.getName())) {
-						if ( pu.getProperties() == null)
+						if (pu.getProperties() == null)
 							pu.setProperties(new Persistence.PersistenceUnit.Properties());
 						pu.getProperties().getProperty().add(p);
 						String reason = isValid(pu);
@@ -253,8 +231,7 @@ public class JPAManager {
 						} else {
 							StringWriter sb = new StringWriter();
 							JAXB.marshal(pu, sb);
-							log.invalidPersistenceUnit(bundle, location,
-									reason, sb.toString());
+							log.invalidPersistenceUnit(bundle, location, reason, sb.toString());
 						}
 					}
 				}

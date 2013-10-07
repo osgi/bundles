@@ -22,8 +22,7 @@ class TransactionalEntityManager implements EntityManager {
 	private final ThreadLocal<EntityManager>	perThreadEntityManager	= new ThreadLocal<EntityManager>();
 	private volatile boolean					open					= true;
 
-	public TransactionalEntityManager(TransactionManager tm,
-			EntityManagerFactory emf) {
+	public TransactionalEntityManager(TransactionManager tm, EntityManagerFactory emf) {
 		this.transactionManager = tm;
 		this.entityManagerFactory = emf;
 	}
@@ -55,8 +54,7 @@ class TransactionalEntityManager implements EntityManager {
 			//
 			final Transaction transaction = transactionManager.getTransaction();
 			if (transaction == null)
-				throw new TransactionRequiredException(
-						"Cannot create an EM since no transaction active");
+				throw new TransactionRequiredException("Cannot create an EM since no transaction active");
 
 			//
 			// Ok, now we can create one since we can also close it.
@@ -100,12 +98,13 @@ class TransactionalEntityManager implements EntityManager {
 				em.joinTransaction();
 				return em;
 
-			} catch (Exception e) {
-				em.close();
-				throw new IllegalStateException(
-						"Registering synchronization to close EM", e);
 			}
-		} catch (Exception e) {
+			catch (Exception e) {
+				em.close();
+				throw new IllegalStateException("Registering synchronization to close EM", e);
+			}
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -118,8 +117,7 @@ class TransactionalEntityManager implements EntityManager {
 	 * We automatically close so ignore.
 	 */
 	@Override
-	public void close() {
-	}
+	public void close() {}
 
 	@Override
 	public void clear() {
@@ -177,8 +175,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public <T> T find(Class<T> arg0, Object arg1, LockModeType arg2,
-			Map<String, Object> arg3) {
+	public <T> T find(Class<T> arg0, Object arg1, LockModeType arg2, Map<String,Object> arg3) {
 		return getEM().find(arg0, arg1, arg2, arg3);
 	}
 
@@ -188,7 +185,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public <T> T find(Class<T> arg0, Object arg1, Map<String, Object> arg2) {
+	public <T> T find(Class<T> arg0, Object arg1, Map<String,Object> arg2) {
 		return getEM().find(arg0, arg1, arg2);
 	}
 
@@ -233,7 +230,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public Map<String, Object> getProperties() {
+	public Map<String,Object> getProperties() {
 		return getEM().getProperties();
 	}
 
@@ -258,7 +255,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void lock(Object arg0, LockModeType arg1, Map<String, Object> arg2) {
+	public void lock(Object arg0, LockModeType arg1, Map<String,Object> arg2) {
 		getEM().lock(arg0, arg1, arg2);
 	}
 
@@ -278,7 +275,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void refresh(Object arg0, LockModeType arg1, Map<String, Object> arg2) {
+	public void refresh(Object arg0, LockModeType arg1, Map<String,Object> arg2) {
 		getEM().refresh(arg0, arg1, arg2);
 	}
 
@@ -288,7 +285,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void refresh(Object arg0, Map<String, Object> arg1) {
+	public void refresh(Object arg0, Map<String,Object> arg1) {
 		getEM().refresh(arg0, arg1);
 	}
 
@@ -338,14 +335,12 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public StoredProcedureQuery createStoredProcedureQuery(
-			String procedureName, Class... resultClasses) {
+	public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
 		return getEM().createStoredProcedureQuery(procedureName, resultClasses);
 	}
 
 	@Override
-	public StoredProcedureQuery createStoredProcedureQuery(
-			String procedureName, String... resultSetMappings) {
+	public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
 		return getEM().createStoredProcedureQuery(procedureName, resultSetMappings);
 	}
 
@@ -360,17 +355,17 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public EntityGraph<?> createEntityGraph(String graphName) {
+	public EntityGraph< ? > createEntityGraph(String graphName) {
 		return getEM().createEntityGraph(graphName);
 	}
 
 	@Override
-	public EntityGraph<?> getEntityGraph(String graphName) {
+	public EntityGraph< ? > getEntityGraph(String graphName) {
 		return getEM().getEntityGraph(graphName);
 	}
 
 	@Override
-	public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
+	public <T> List<EntityGraph< ? super T>> getEntityGraphs(Class<T> entityClass) {
 		return getEM().getEntityGraphs(entityClass);
 	}
 }

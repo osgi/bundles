@@ -5,18 +5,18 @@
 // Generated on: 2013.08.22 at 11:20:46 AM CEST 
 //
 
-
 package v2_0;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
-
+import javax.xml.bind.annotation.*;
 
 /**
- * <p>Java class for persistence-unit-caching-type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for persistence-unit-caching-type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="persistence-unit-caching-type">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token">
@@ -28,24 +28,19 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "persistence-unit-caching-type")
 @XmlEnum
 public enum PersistenceUnitCachingType {
 
-    ALL,
-    NONE,
-    ENABLE_SELECTIVE,
-    DISABLE_SELECTIVE,
-    UNSPECIFIED;
+	ALL, NONE, ENABLE_SELECTIVE, DISABLE_SELECTIVE, UNSPECIFIED;
 
-    public String value() {
-        return name();
-    }
+	public String value() {
+		return name();
+	}
 
-    public static PersistenceUnitCachingType fromValue(String v) {
-        return valueOf(v);
-    }
+	public static PersistenceUnitCachingType fromValue(String v) {
+		return valueOf(v);
+	}
 
 }

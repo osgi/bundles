@@ -11,7 +11,7 @@ import aQute.bnd.annotation.component.*;
 @Component(properties = "pattern=.*", designate = Config.class)
 public class JTACoordinator implements Filter {
 
-	private TransactionManager tm;
+	private TransactionManager	tm;
 
 	interface Config {
 		String pattern();
@@ -23,37 +23,42 @@ public class JTACoordinator implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest rq, ServletResponse rsp,
-			FilterChain next) throws IOException, ServletException {
+	public void doFilter(ServletRequest rq, ServletResponse rsp, FilterChain next) throws IOException, ServletException {
 		try {
 			tm.begin();
 			try {
 				next.doFilter(rq, rsp);
 				tm.commit();
-			} catch (IOException ie) {
+			}
+			catch (IOException ie) {
 				tm.rollback();
 				throw ie;
-			} catch (ServletException se) {
+			}
+			catch (ServletException se) {
 				tm.rollback();
 				throw se;
-			} catch (Throwable e) {
+			}
+			catch (Throwable e) {
 				tm.rollback();
 				throw new RuntimeException(e);
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw e;
-		} catch (ServletException e) {
+		}
+		catch (ServletException e) {
 			throw e;
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			throw e;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new IOException(e);
 		}
 	}
 
 	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-	}
+	public void init(FilterConfig arg0) throws ServletException {}
 
 	@Reference
 	void setTransactionManager(TransactionManager tm) {
