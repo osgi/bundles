@@ -163,7 +163,7 @@ public class XADataSourceFactory implements XADataSource {
 	 * @return
 	 * @throws SQLFeatureNotSupportedException
 	 */
-	Logger getParentLogger() throws SQLFeatureNotSupportedException {
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		if (getparentlogger == null)
 			throw new SQLFeatureNotSupportedException(ds
 					+ " does not implement getParentLogger");
