@@ -31,12 +31,18 @@
 # Git-Descriptor: ${system-allow-fail;git describe --dirty --always}
 # Git-SHA: ${system-allow-fail;git rev-list -1 HEAD}
 
-# /Ws/aQute.jpm/aQute.jpm.bndrepo/generated/aQute.jpm.bndrepo.jar, 
 
+#
+# Access to the JPM repo. Temporary local path
+# for testing.
+#
 -pluginpath:  \
 	${workspace}/cnf/cache/jpmrepo.jar; \
-		url='http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/20AB3F1E1B49247DF437BAFA509D0AA80CAB1EF9'; \
-		sha1=20ab3f1e1b49247df437bafa509d0aa80cab1ef9
+		url='http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/c85250219128113bf7ffda0ef3bb2f60448f2cbb'; \
+		sha1=c85250219128113bf7ffda0ef3bb2f60448f2cbb, \
+	${workspace}/cnf/bndrepo/aQute.jpm.bndrepo.jar
+	
+		
 
 	
 -plugin: \
@@ -46,7 +52,7 @@
         location=~/.bnd/ycache; \
         index=${workspace}/cnf/jpm4j.json; \
         depository.group=OSGi; \
-        depository.name=enRoute.rt, \
+        depository.name=bundles, \
 	aQute.lib.deployer.FileRepo;readonly=true;name=Libs;location=${workspace}/cnf/libs        
         
         
