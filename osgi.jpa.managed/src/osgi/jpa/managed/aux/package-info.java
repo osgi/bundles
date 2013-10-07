@@ -1,9 +1,9 @@
 /**
  * The JPA Bridge combines 3 services:
  * <ul>
- * <li>XA DataSource Ñ A Data source configured for the current database.
- * <li>Transaction Manager Ñ Provides the transactional context
- * <li>Persistence Provider Ñ The JPA provider.
+ * <li>XA DataSource - A Data source configured for the current database.
+ * <li>Transaction Manager - Provides the transactional context
+ * <li>Persistence Provider - The JPA provider.
  * </ul>
  * 
  * This bridge then provides the Persistence Provider with a {@code PersistenceUnit} object. This

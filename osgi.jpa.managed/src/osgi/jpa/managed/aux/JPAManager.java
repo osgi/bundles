@@ -198,7 +198,7 @@ public class JPAManager {
 	 * this is the META-INF/persistence.xml resource. This location is the
 	 * standard for non- OSGi environments, however an OSGi bundle can also use
 	 * other locations as well as multiple resources. Any entity classes must
-	 * originate in the bundle’s JAR, it cannot come from a fragment. This
+	 * originate in the bundle's JAR, it cannot come from a fragment. This
 	 * requirement is necessary to simplify enhancing entity classes.
 	 * 
 	 * @param bundle
