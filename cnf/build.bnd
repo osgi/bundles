@@ -70,9 +70,11 @@ javac.debug:  on
 
 
 Bundle-Vendor: OSGi Alliance
-Bundle-Copyright: Copyright © OSGi Alliance (2013, ${tstamp;yyyy}). All Rights Reserved.
+Bundle-Copyright: Copyright ï¿½ OSGi Alliance (2013, ${tstamp;yyyy}). All Rights Reserved.
 Bundle-License: http://opensource.org/licenses/Apache-2.0
         
         
 -make:                  (*).(jar);type=bnd; recipe="bnd/$1.bnd"
-        
+
+test-cases:				${classes;CONCRETE;EXTENDS;junit.framework.TestCase}
+

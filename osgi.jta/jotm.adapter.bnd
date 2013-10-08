@@ -1,3 +1,7 @@
+Bundle-Version: 2.3.1.${tstamp}
+Bundle-Description: An adapter for the Jonas Transaction Manager. This bundle will register the \
+ Jonas Transaction Manager as a Transaction Manager service and provides \
+ the proper adaption to make it look like a standard transaction manager.
 Private-Package: osgi.jta.jotm.adapter
 Service-Component: *
 Bundle-Version: 1.0.0.${tstamp}

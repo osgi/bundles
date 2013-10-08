@@ -1,3 +1,17 @@
+# Dist
+# This project's purpose is to provide a distribution. It is designed to depend
+# on all projects in this workspace (except itself) and build them. It will
+# then run the junit tests, collects a repository and run's any OSGi tests.
+#
+# You can find a repository in the repo directory. The root of the workspace
+# contains an ant build.xml which will build the distribution.
+
+#
+# Depend on all bundle projects in this workspace
+#
 -dependson: osgi.*
-no.junit: true
+
+#
+# We are not a bundle project
+#
 -nobundles: true

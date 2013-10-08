@@ -1,4 +1,6 @@
 Bundle-Version: 1.0.0.${tstamp}
-Bundle-Description: 
+Bundle-Description: A Servlet Filter to set the transaction. This filter\
+ will begin and commit/rollback a transaction when the web request has been done.
+ 
 Private-Package: osgi.jta.filter.aux
 Service-Component: *

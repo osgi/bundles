@@ -1,19 +1,33 @@
-Private-Package: osgi.jpa.managed.jdbc.test,\
+#
+# Test bundle for the OSGi JPA Managed model
+#
+# Tests a variety of combinations of databases and JPA providers.
+#
+
+
+Bundle-Version: 1.0.0.${tstamp}
+Private-Package: \
+	osgi.jpa.managed.jdbc.test,\
 	osgi.jpa.managed.appl.test
 	
-# force an export for a non-existent package
-# so that some dependencies are solved.
+# Force an export for a non-existent package
+# so that some dependencies are solved in runtime.
+# these packages are empty but they are not used in 
+# the test.
 
 Export-Package: \
 	org.apache.tools.ant;version=1.0.0, \
 	org.apache.tools.ant.taskdefs;version=1.0.0, \
 	org.apache.tools.ant.types;version=1.0.0
 	
-
-
 Service-Component: *
 
+#
+# Define the test cases in this bundle
+#
+Test-Cases: ${test-cases}
 
+Meta-Persistence: osgi/jpa/managed/appl/test/persistence.xml
 
 -buildpath: \
 	cnf.api;version=1.0.0,\
@@ -44,6 +58,5 @@ Service-Component: *
 	cnf.run.shell
 	
 
-Test-Cases: ${classes;CONCRETE;EXTENDS;junit.framework.TestCase}
 
-Meta-Persistence: osgi/jpa/managed/appl/test/persistence.xml
+-includeresource: {readme.md=readme.md}

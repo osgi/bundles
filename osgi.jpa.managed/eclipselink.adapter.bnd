@@ -1,1 +1,7 @@
+#
+# Make Eclipselink work the OSGi way ...
+#
+
 Private-Package: osgi.jpa.managed.eclipse.adapter
+
+-includeresource: {readme.md=readme/eclipselink.md}

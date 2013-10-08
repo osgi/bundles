@@ -8,6 +8,10 @@ import javax.transaction.*;
 import osgi.jta.filter.aux.JTACoordinator.Config;
 import aQute.bnd.annotation.component.*;
 
+/**
+ * Begin a transaction and commit it if the request does not throw an Exception.
+ * Otherwise, roll the transaction back.
+ */
 @Component(properties = "pattern=.*", designate = Config.class)
 public class JTACoordinator implements Filter {
 
@@ -22,6 +26,9 @@ public class JTACoordinator implements Filter {
 
 	}
 
+	/**
+	 * Filter call.
+	 */
 	@Override
 	public void doFilter(ServletRequest rq, ServletResponse rsp, FilterChain next) throws IOException, ServletException {
 		try {

@@ -19,7 +19,7 @@ import aQute.lib.converter.*;
  * connections.
  */
 
-@Component(servicefactory = true, designateFactory = XADataSourceFactory.Config.class)
+@Component(designateFactory = XADataSourceFactory.Config.class)
 public class XADataSourceFactory {
 	private DataSourceFactory	dsf;
 	private XADataSource		ds;

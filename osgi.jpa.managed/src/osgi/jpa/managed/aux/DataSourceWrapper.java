@@ -233,7 +233,6 @@ class DataSourceWrapper implements InvocationHandler {
 
 	@SuppressWarnings("unused")
 	private Connection add(final Connection connection) {
-		System.out.println("Add " + connection);
 		connections.add(connection);
 		return new ConnectionWrapper(connection) {
 			public void close() {

@@ -1,6 +1,18 @@
+Bundle-Version: 		2.1.3.${tstamp}
+Bundle-Description: 	An adapter for the Bitronix Transaction Manager. It will register the Bitronix \
+ TM as a service. This adapter is not complete yet.
+
+
 Private-Package: bitronix.*,\
 	osgi.jta.bitronix.adapter
-Bundle-Version: 2.1.3.${tstamp}
+
 Service-Component: *
+
+#
+# JMX is optional since we only need that code when
+# JMS is present
+#
 Import-Package: javax.jms;resolution:=optional,\
 	*
+	
+-includeresource: {readme/btm.md}

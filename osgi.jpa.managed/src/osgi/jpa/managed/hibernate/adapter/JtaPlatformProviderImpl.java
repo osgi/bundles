@@ -16,13 +16,11 @@ public class JtaPlatformProviderImpl implements JtaPlatformProvider {
 
 			@Override
 			protected TransactionManager locateTransactionManager() {
-				System.out.println("get transaction for hibernate");
 				return transactionManager;
 			}
 
 			@Override
 			protected UserTransaction locateUserTransaction() {
-				System.out.println("get user transaction for hibernate");
 				return new UserTransaction() {
 
 					@Override

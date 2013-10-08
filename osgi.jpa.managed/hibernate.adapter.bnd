@@ -3,7 +3,26 @@
 #
 
 Private-Package: osgi.jpa.managed.hibernate.adapter
+
+#
+# Unfortunately, hibernate needs jandex and there
+# is no bundle for it. So we provide it to make it
+# happy.
+#
 Export-Package: org.jboss.jandex.*
 
--includeresource: META-INF/services/org.hibernate.engine.transaction.jta.platform.spi.JtaPlatformProvider;literal="osgi.jpa.managed.hibernate.adapter.JtaPlatformProviderImpl"
+#
+# Hibernate uses the META-INF/services model to find a platform 
+# provider. So to make it happy, we use a Thread Context Class loader
+# and provide a JtaPlatformProviderImpl
+#
+-includeresource: \
+	META-INF/services/org.hibernate.engine.transaction.jta.platform.spi.JtaPlatformProvider;literal="osgi.jpa.managed.hibernate.adapter.JtaPlatformProviderImpl", \
+	{readme.md=readme/eclipselink.md}
+
+#
+# Since hibernate assumes a global namespace it does not properly
+# weave the code. We therefore make sure we provide a TCCL and
+# make sure we import the classes that are woven in.
+#
 Import-Package: org.hibernate.proxy, javassist.util.proxy,*
