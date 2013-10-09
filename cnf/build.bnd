@@ -17,8 +17,8 @@
 #java:         java
 #javac:        javac
 
-javac.source: 1.6
-javac.target: 1.6
+javac.source: 1.7
+javac.target: 1.7
 javac.debug:  on
 
 
