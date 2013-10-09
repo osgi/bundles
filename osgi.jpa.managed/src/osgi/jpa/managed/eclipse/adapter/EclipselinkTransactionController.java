@@ -1,8 +1,8 @@
+
 package osgi.jpa.managed.eclipse.adapter;
 
-import javax.transaction.*;
-
-import org.eclipse.persistence.transaction.*;
+import javax.transaction.TransactionManager;
+import org.eclipse.persistence.transaction.JTATransactionController;
 
 /**
  * This sucks SOOOOOOOOOOOOOO majorly, having to use statics to make EclipseLink

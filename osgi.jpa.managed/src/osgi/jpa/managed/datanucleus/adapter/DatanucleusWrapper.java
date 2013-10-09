@@ -1,18 +1,22 @@
+
 package osgi.jpa.managed.datanucleus.adapter;
 
-import java.io.*;
-import java.lang.instrument.*;
-import java.net.*;
-import java.security.*;
-import java.util.*;
-
-import javax.persistence.*;
-import javax.persistence.spi.*;
-
-import org.osgi.framework.*;
-import org.osgi.framework.wiring.*;
-
-import osgi.jpa.managed.api.*;
+import java.io.IOException;
+import java.lang.instrument.IllegalClassFormatException;
+import java.net.URL;
+import java.security.ProtectionDomain;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.ClassTransformer;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
+import javax.persistence.spi.ProviderUtil;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWiring;
+import osgi.jpa.managed.api.JPABridgePersistenceProvider;
 
 @SuppressWarnings("rawtypes")
 public class DatanucleusWrapper implements PersistenceProvider, JPABridgePersistenceProvider {
@@ -44,7 +48,7 @@ public class DatanucleusWrapper implements PersistenceProvider, JPABridgePersist
 		info.addTransformer(new ClassTransformer() {
 
 			@Override
-			public byte[] transform(ClassLoader loader, String className, Class< ? > classBeingRedefined,
+			public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
 					ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
 				// TODO Auto-generated method stub
@@ -91,7 +95,7 @@ public class DatanucleusWrapper implements PersistenceProvider, JPABridgePersist
 		return new ClassLoader(cla) {
 
 			@Override
-			protected Class< ? > findClass(String className) throws ClassNotFoundException {
+			protected Class<?> findClass(String className) throws ClassNotFoundException {
 
 				return clb.loadClass(className);
 			}

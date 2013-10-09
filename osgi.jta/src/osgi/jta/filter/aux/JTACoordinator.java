@@ -1,12 +1,17 @@
+
 package osgi.jta.filter.aux;
 
-import java.io.*;
-
-import javax.servlet.*;
-import javax.transaction.*;
-
+import java.io.IOException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.transaction.TransactionManager;
 import osgi.jta.filter.aux.JTACoordinator.Config;
-import aQute.bnd.annotation.component.*;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
 
 /**
  * Begin a transaction and commit it if the request does not throw an Exception.
@@ -36,36 +41,30 @@ public class JTACoordinator implements Filter {
 			try {
 				next.doFilter(rq, rsp);
 				tm.commit();
-			}
-			catch (IOException ie) {
+			} catch (IOException ie) {
 				tm.rollback();
 				throw ie;
-			}
-			catch (ServletException se) {
+			} catch (ServletException se) {
 				tm.rollback();
 				throw se;
-			}
-			catch (Throwable e) {
+			} catch (Throwable e) {
 				tm.rollback();
 				throw new RuntimeException(e);
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw e;
-		}
-		catch (ServletException e) {
+		} catch (ServletException e) {
 			throw e;
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new IOException(e);
 		}
 	}
 
 	@Override
-	public void init(FilterConfig arg0) throws ServletException {}
+	public void init(FilterConfig arg0) throws ServletException {
+	}
 
 	@Reference
 	void setTransactionManager(TransactionManager tm) {

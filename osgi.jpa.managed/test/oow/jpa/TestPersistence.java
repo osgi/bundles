@@ -1,11 +1,10 @@
+
 package oow.jpa;
 
-import java.io.*;
-
-import javax.xml.bind.*;
-
-import junit.framework.*;
-import v2_0.*;
+import java.io.File;
+import javax.xml.bind.JAXB;
+import junit.framework.TestCase;
+import v2_0.Persistence;
 import v2_0.Persistence.PersistenceUnit;
 
 public class TestPersistence extends TestCase {

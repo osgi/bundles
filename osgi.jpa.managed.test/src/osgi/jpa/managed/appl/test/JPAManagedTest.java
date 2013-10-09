@@ -1,22 +1,22 @@
+
 package osgi.jpa.managed.appl.test;
 
-import java.io.*;
-import java.util.*;
-
-import javax.persistence.*;
-import javax.transaction.*;
-
-import junit.framework.*;
-
-import org.osgi.framework.*;
-import org.osgi.service.cm.*;
-import org.osgi.service.jdbc.*;
-import org.osgi.util.tracker.*;
-
-import osgi.jpa.managed.jdbc.test.*;
-import aQute.bnd.annotation.component.*;
-import aQute.test.dummy.ds.*;
-import aQute.test.dummy.log.*;
+import java.io.IOException;
+import java.util.Hashtable;
+import javax.persistence.EntityManager;
+import javax.transaction.TransactionManager;
+import junit.framework.TestCase;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.util.tracker.ServiceTracker;
+import osgi.jpa.managed.jdbc.test.JDBCManagedTest;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
+import aQute.test.dummy.ds.DummyDS;
+import aQute.test.dummy.log.DummyLog;
 
 @Component
 public class JPAManagedTest extends TestCase {
@@ -31,8 +31,7 @@ public class JPAManagedTest extends TestCase {
 			ds.add(this);
 			ds.add(new DummyLog());
 			ds.wire();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			Thread.sleep(1000000);
 		}
@@ -43,8 +42,7 @@ public class JPAManagedTest extends TestCase {
 		Configuration jpa = startHibernate();
 		try {
 			assertDb();
-		}
-		finally {
+		} finally {
 			db.delete();
 			jpa.delete();
 		}
@@ -55,15 +53,14 @@ public class JPAManagedTest extends TestCase {
 		Configuration jpa = startEclipseLink();
 		try {
 			assertDb();
-		}
-		finally {
+		} finally {
 			db.delete();
 			jpa.delete();
 		}
 	}
 
 	private void assertDb() throws InterruptedException, Throwable {
-		ServiceTracker<EntityManager,EntityManager> ems = new ServiceTracker<EntityManager,EntityManager>(context,
+		ServiceTracker<EntityManager, EntityManager> ems = new ServiceTracker<EntityManager, EntityManager>(context,
 				EntityManager.class, null);
 		ems.open();
 		EntityManager em = ems.waitForService(10000);
@@ -87,8 +84,7 @@ public class JPAManagedTest extends TestCase {
 				key = d.getId();
 				assertNotNull(key);
 				tm.commit();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				tm.rollback();
 				throw e;
@@ -101,21 +97,19 @@ public class JPAManagedTest extends TestCase {
 				assertEquals(key, find.getId());
 				assertEquals("blabla", find.getName());
 				tm.commit();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				tm.rollback();
 				throw e;
 			}
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			t.printStackTrace();
 			throw t;
 		}
 	}
 
 	private Configuration startHibernate() throws IOException {
-		Hashtable<String,String> props = new Hashtable<String,String>();
+		Hashtable<String, String> props = new Hashtable<String, String>();
 		props.put("name", "*");
 		props.put("persistenceProvider.target", "(service.vendor=Hibernate)");
 		Configuration c = cm.createFactoryConfiguration("osgi.jpa.managed.aux.JPAManager", null);
@@ -124,7 +118,7 @@ public class JPAManagedTest extends TestCase {
 	}
 
 	private Configuration startEclipseLink() throws IOException {
-		Hashtable<String,String> props = new Hashtable<String,String>();
+		Hashtable<String, String> props = new Hashtable<String, String>();
 		props.put("name", "*");
 		props.put("persistenceProvider.target", "(service.vendor=EclipseLink)");
 		Configuration c = cm.createFactoryConfiguration("osgi.jpa.managed.aux.JPAManager", null);
@@ -133,7 +127,7 @@ public class JPAManagedTest extends TestCase {
 	}
 
 	private Configuration startH2() throws IOException {
-		Hashtable<String,String> props = new Hashtable<String,String>();
+		Hashtable<String, String> props = new Hashtable<String, String>();
 		props.put("url", JDBCManagedTest.H2_URL);
 		props.put("dataSourceFactory.target", "(" + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + "=org.h2.Driver)");
 

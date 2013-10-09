@@ -1,15 +1,19 @@
+
 package osgi.jdbc.managed.aux;
 
-import java.util.*;
-
-import javax.sql.*;
-
-import org.osgi.framework.*;
-import org.osgi.service.jdbc.*;
-
-import aQute.bnd.annotation.component.*;
-import aQute.bnd.annotation.metatype.*;
-import aQute.lib.converter.*;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Properties;
+import javax.sql.XADataSource;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.jdbc.DataSourceFactory;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Reference;
+import aQute.bnd.annotation.metatype.Meta;
+import aQute.lib.converter.Converter;
 
 /**
  * This component configures an XA Data Source from a Data Source Factory. It
@@ -45,19 +49,18 @@ public class XADataSourceFactory {
 		String dataSourceFactory_target();
 	}
 
-	private Config						config;
-	private ServiceRegistration< ? >	registration;
+	private Config					config;
+	private ServiceRegistration<?>	registration;
 
 	/**
 	 * Awfully simple. Just use the Data Source Factory to create a Data Source.
 	 * We delegate all the XA Data Source calls t this Data Source.
 	 * 
-	 * @param properties
-	 *            the DS properties (also from Config admin)
+	 * @param properties the DS properties (also from Config admin)
 	 * @throws Exception
 	 */
 	@Activate
-	void activate(BundleContext context, Map<String,Object> properties) throws Exception {
+	void activate(BundleContext context, Map<String, Object> properties) throws Exception {
 		config = Converter.cnv(Config.class, properties);
 		assert config.url() != null;
 
@@ -71,7 +74,7 @@ public class XADataSourceFactory {
 		}
 
 		ds = dsf.createXADataSource(props);
-		registration = context.registerService(XADataSource.class.getName(), ds, new Hashtable<String,Object>(
+		registration = context.registerService(XADataSource.class.getName(), ds, new Hashtable<String, Object>(
 				properties));
 	}
 
@@ -85,8 +88,7 @@ public class XADataSourceFactory {
 	 * method is public because the name is used as a configuration parameter to
 	 * select specific Data Source Factory services.
 	 * 
-	 * @param dsf
-	 *            the Data Source factory from the db provider.
+	 * @param dsf the Data Source factory from the db provider.
 	 */
 	@Reference
 	public void setDataSourceFactory(DataSourceFactory dsf) {

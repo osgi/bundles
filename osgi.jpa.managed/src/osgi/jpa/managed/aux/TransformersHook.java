@@ -1,22 +1,22 @@
+
 package osgi.jpa.managed.aux;
 
-import java.util.*;
-
-import javax.persistence.spi.*;
-
-import org.osgi.framework.*;
-import org.osgi.framework.hooks.weaving.*;
-import org.osgi.framework.wiring.*;
-
-import aQute.lib.collections.*;
+import java.util.Arrays;
+import java.util.List;
+import javax.persistence.spi.ClassTransformer;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.hooks.weaving.WeavingHook;
+import org.osgi.framework.hooks.weaving.WovenClass;
+import org.osgi.framework.wiring.BundleWiring;
+import aQute.lib.collections.MultiMap;
 
 /**
  * This class is a WeavingHook service which is used to handle the transformers.
  */
 class TransformersHook implements WeavingHook {
-	private static final ClassTransformer[]			empty			= new ClassTransformer[0];
-	private final MultiMap<Bundle,ClassTransformer>	transformers	= new MultiMap<Bundle,ClassTransformer>();
-	private final List<String>						imports;
+	private static final ClassTransformer[]				empty			= new ClassTransformer[0];
+	private final MultiMap<Bundle, ClassTransformer>	transformers	= new MultiMap<Bundle, ClassTransformer>();
+	private final List<String>							imports;
 
 	TransformersHook(List<String> imports) {
 		this.imports = imports;
@@ -49,8 +49,7 @@ class TransformersHook implements WeavingHook {
 			if (!imports.isEmpty())
 				clazz.getDynamicImports().addAll(imports);
 
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

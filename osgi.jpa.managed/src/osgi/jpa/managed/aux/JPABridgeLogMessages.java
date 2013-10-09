@@ -1,8 +1,9 @@
+
 package osgi.jpa.managed.aux;
 
-import org.osgi.framework.*;
-
-import aQute.service.logger.*;
+import org.osgi.framework.Bundle;
+import aQute.service.logger.Format;
+import aQute.service.logger.LogMessages;
 
 /**
  * The log messages for the JPA Bridge application.

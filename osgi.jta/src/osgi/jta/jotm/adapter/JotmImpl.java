@@ -1,10 +1,19 @@
+
 package osgi.jta.jotm.adapter;
 
-import javax.transaction.*;
-
-import org.objectweb.jotm.*;
-
-import aQute.bnd.annotation.component.*;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
+import org.objectweb.jotm.Jotm;
+import org.objectweb.jotm.RmiConfiguration;
+import org.objectweb.jotm.RmiConfigurationException;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
 
 @Component
 public class JotmImpl implements javax.transaction.TransactionManager {
@@ -22,12 +31,12 @@ public class JotmImpl implements javax.transaction.TransactionManager {
 				}
 
 				@Override
-				public void init() throws RmiConfigurationException {}
+				public void init() throws RmiConfigurationException {
+				}
 			};
 			jotm = new org.objectweb.jotm.Jotm(true, false, rmc);
 			delegate = jotm.getTransactionManager();
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			t.printStackTrace();
 			throw t;
 		}

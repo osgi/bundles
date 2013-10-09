@@ -1,16 +1,15 @@
+
 package osgi.jdbc.managed.aux;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
-
-import java.util.*;
-
-import javax.sql.*;
-
-import junit.framework.*;
-
-import org.osgi.framework.*;
-import org.osgi.service.jdbc.*;
+import java.util.HashMap;
+import java.util.Map;
+import javax.sql.XAConnection;
+import javax.sql.XADataSource;
+import junit.framework.TestCase;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.jdbc.DataSourceFactory;
 
 /**
  * Whitebox (arguably simplistic so far) test for the XADataSourceFactory
@@ -34,7 +33,7 @@ public class XADataSourceFactoryTest extends TestCase {
 
 		xad.setDataSourceFactory(dsf);
 
-		Map<String,Object> props = new HashMap<String,Object>();
+		Map<String, Object> props = new HashMap<String, Object>();
 		props.put(DataSourceFactory.JDBC_URL, JDBC_TEST);
 		xad.activate(context, props);
 

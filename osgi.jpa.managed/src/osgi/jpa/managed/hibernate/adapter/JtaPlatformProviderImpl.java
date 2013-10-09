@@ -1,9 +1,16 @@
+
 package osgi.jpa.managed.hibernate.adapter;
 
-import javax.transaction.*;
-
-import org.hibernate.engine.transaction.jta.platform.internal.*;
-import org.hibernate.engine.transaction.jta.platform.spi.*;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
+import org.hibernate.engine.transaction.jta.platform.internal.AbstractJtaPlatform;
+import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
+import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatformProvider;
 
 public class JtaPlatformProviderImpl implements JtaPlatformProvider {
 

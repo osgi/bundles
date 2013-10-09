@@ -1,6 +1,7 @@
+
 package org.example;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
 public class ExampleComponentTest extends TestCase {
 

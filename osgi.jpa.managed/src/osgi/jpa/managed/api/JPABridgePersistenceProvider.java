@@ -1,9 +1,9 @@
+
 package osgi.jpa.managed.api;
 
-import java.net.*;
-import java.util.*;
-
-import org.osgi.framework.*;
+import java.net.URL;
+import java.util.List;
+import org.osgi.framework.Bundle;
 
 /**
  * Can be implemented by bundles that bridge a specific Perisistence Provider.

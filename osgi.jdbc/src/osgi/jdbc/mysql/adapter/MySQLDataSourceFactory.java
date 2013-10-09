@@ -1,15 +1,17 @@
+
 package osgi.jdbc.mysql.adapter;
 
-import java.sql.*;
-import java.util.*;
-
-import javax.sql.*;
-
-import org.osgi.service.jdbc.*;
-
-import aQute.bnd.annotation.component.*;
-
-import com.mysql.jdbc.jdbc2.optional.*;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.Properties;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
+import javax.sql.XADataSource;
+import org.osgi.service.jdbc.DataSourceFactory;
+import aQute.bnd.annotation.component.Component;
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlXADataSource;
 
 @Component(properties = {
 		"osgi.jdbc.driver.class=com.mysql.jdbc.Driver", "osgi.jdbc.driver.name=MySql",

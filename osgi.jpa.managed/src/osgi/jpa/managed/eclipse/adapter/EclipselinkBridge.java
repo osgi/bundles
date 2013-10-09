@@ -1,18 +1,24 @@
+
 package osgi.jpa.managed.eclipse.adapter;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.persistence.*;
-import javax.persistence.spi.*;
-import javax.transaction.*;
-
-import org.osgi.framework.*;
-import org.osgi.framework.wiring.*;
-
-import osgi.jpa.managed.api.*;
-import aQute.bnd.annotation.component.*;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
+import javax.persistence.spi.ProviderUtil;
+import javax.transaction.TransactionManager;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWiring;
+import osgi.jpa.managed.api.JPABridgePersistenceProvider;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
 
 /**
  * Create the persistence provider for Eclipselink and delegate all the messages
@@ -90,7 +96,7 @@ public class EclipselinkBridge implements PersistenceProvider, JPABridgePersiste
 		return new ClassLoader(cla) {
 
 			@Override
-			protected Class< ? > findClass(String className) throws ClassNotFoundException {
+			protected Class<?> findClass(String className) throws ClassNotFoundException {
 
 				return clb.loadClass(className);
 			}

@@ -1,9 +1,17 @@
+
 package osgi.jta.bitronix.adapter;
 
-import javax.transaction.*;
-
-import aQute.bnd.annotation.component.*;
-import bitronix.tm.*;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.TransactionManagerServices;
 
 @Component
 public class BitronixImpl implements javax.transaction.TransactionManager {

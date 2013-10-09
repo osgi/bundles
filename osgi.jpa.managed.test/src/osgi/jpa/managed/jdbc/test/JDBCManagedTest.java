@@ -1,41 +1,44 @@
+
 package osgi.jpa.managed.jdbc.test;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-
-import javax.sql.*;
-
-import junit.framework.*;
-
-import org.junit.*;
-import org.junit.rules.*;
-import org.osgi.framework.*;
-import org.osgi.service.cm.*;
-import org.osgi.service.jdbc.*;
-import org.osgi.util.tracker.*;
-
-import aQute.bnd.annotation.component.*;
-import aQute.test.dummy.ds.*;
-import aQute.test.dummy.log.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Hashtable;
+import javax.sql.XADataSource;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.util.tracker.ServiceTracker;
+import aQute.bnd.annotation.component.Reference;
+import aQute.test.dummy.ds.DummyDS;
+import aQute.test.dummy.log.DummyLog;
 
 public class JDBCManagedTest extends TestCase {
 
-	public static final String							MYSQL_URL				= "jdbc:mysql:///test_jdbc?user=root&password=&createDatabaseIfNotExist=true";
-	public static final String							XA_DATA_SOURCE_FACTORY	= "osgi.jdbc.managed.aux.XADataSourceFactory";
-	public static final String							H2_URL					= "jdbc:h2:mem:test";
+	public static final String								MYSQL_URL				= "jdbc:mysql:///test_jdbc?user=root&password=&createDatabaseIfNotExist=true";
+	public static final String								XA_DATA_SOURCE_FACTORY	= "osgi.jdbc.managed.aux.XADataSourceFactory";
+	public static final String								H2_URL					= "jdbc:h2:mem:test";
 
 	@Rule
-	TemporaryFolder										folder					= new TemporaryFolder();
-	private ConfigurationAdmin							cm;
-	private BundleContext								context					= FrameworkUtil.getBundle(getClass())
-																						.getBundleContext();
-	ServiceTracker<XADataSource,XADataSource>			xtds					= new ServiceTracker<XADataSource,XADataSource>(
-																						context, XADataSource.class,
-																						null);
-	ServiceTracker<DataSourceFactory,DataSourceFactory>	dsf						= new ServiceTracker<DataSourceFactory,DataSourceFactory>(
-																						context,
-																						DataSourceFactory.class, null);
+	TemporaryFolder											folder					= new TemporaryFolder();
+	private ConfigurationAdmin								cm;
+	private BundleContext									context					= FrameworkUtil.getBundle(getClass())
+																							.getBundleContext();
+	ServiceTracker<XADataSource, XADataSource>				xtds					= new ServiceTracker<XADataSource, XADataSource>(
+																							context, XADataSource.class,
+																							null);
+	ServiceTracker<DataSourceFactory, DataSourceFactory>	dsf						= new ServiceTracker<DataSourceFactory, DataSourceFactory>(
+																							context,
+																							DataSourceFactory.class, null);
 
 	@Before
 	public void setUp() throws Exception {
@@ -45,8 +48,7 @@ public class JDBCManagedTest extends TestCase {
 			ds.add(this);
 			ds.add(new DummyLog());
 			ds.wire();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			Thread.sleep(1000000);
 		}
@@ -70,7 +72,7 @@ public class JDBCManagedTest extends TestCase {
 		//
 		// Create a configuration that will create a H2 DataSource
 		//
-		Hashtable<String,String> props = new Hashtable<String,String>();
+		Hashtable<String, String> props = new Hashtable<String, String>();
 		props.put("url", H2_URL);
 		props.put("dataSourceFactory.target", "(" + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + "=org.h2.Driver)");
 
@@ -91,8 +93,7 @@ public class JDBCManagedTest extends TestCase {
 			Statement statement = connection.createStatement();
 			statement.execute("create table blub;");
 			connection.close();
-		}
-		finally {
+		} finally {
 			c.delete();
 		}
 		checkGone();
@@ -108,7 +109,7 @@ public class JDBCManagedTest extends TestCase {
 		//
 		// Create a configuration that will create a H2 DataSource
 		//
-		Hashtable<String,String> props = new Hashtable<String,String>();
+		Hashtable<String, String> props = new Hashtable<String, String>();
 		props.put("url", MYSQL_URL);
 		props.put("dataSourceFactory.target", "(" + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS
 				+ "=com.mysql.jdbc.Driver)");
@@ -131,15 +132,13 @@ public class JDBCManagedTest extends TestCase {
 			statement.execute("drop table blub;");
 			statement.execute("create table blub ( first int);");
 			connection.close();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			// if no MySQL is installed we ignore this test
 			if (e.getClass().getName().equals("com.mysql.jdbc.exceptions.jdbc4.CommunicationsException"))
 				return;
 
 			throw e;
-		}
-		finally {
+		} finally {
 			c.delete();
 		}
 		checkGone();

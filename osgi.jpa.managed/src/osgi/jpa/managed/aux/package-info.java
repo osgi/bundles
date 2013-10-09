@@ -16,4 +16,5 @@
  * registered with the Transaction Manager so that they are automatically closed when the
  * Transaction is finished. 
  */
+
 package osgi.jpa.managed.aux;

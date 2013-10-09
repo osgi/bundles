@@ -1,29 +1,42 @@
+
 package osgi.jpa.managed.aux;
 
-import java.io.*;
-import java.net.*;
-import java.sql.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.*;
-
-import javax.persistence.spi.*;
-import javax.sql.*;
-import javax.transaction.*;
-import javax.xml.bind.*;
-
-import org.osgi.framework.*;
-import org.osgi.framework.hooks.weaving.*;
-import org.osgi.util.tracker.*;
-
-import osgi.jpa.managed.api.*;
-import v2_0.*;
+import java.util.Set;
+import java.util.regex.Pattern;
+import javax.persistence.spi.PersistenceProvider;
+import javax.sql.XADataSource;
+import javax.transaction.TransactionManager;
+import javax.xml.bind.JAXB;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleReference;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.hooks.weaving.WeavingHook;
+import org.osgi.util.tracker.BundleTracker;
+import osgi.jpa.managed.api.JPABridgePersistenceProvider;
+import v2_0.Persistence;
 import v2_0.Persistence.PersistenceUnit;
 import v2_0.Persistence.PersistenceUnit.Properties.Property;
-import aQute.bnd.annotation.component.*;
-import aQute.lib.converter.*;
-import aQute.libg.clauses.*;
-import aQute.service.logger.*;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Reference;
+import aQute.lib.converter.Converter;
+import aQute.libg.clauses.Clauses;
+import aQute.service.logger.Log;
 
 /**
  * This component bridges JPA, TransactionManager, and DataSourceFactory
@@ -43,7 +56,7 @@ public class JPAManager {
 	PersistenceProvider					persistenceProvider;
 	BundleTracker<PersistentBundle>		bundles;
 	JPABridgeLogMessages				log;
-	Map<String,Object>					bridgeProperties	= new HashMap<String,Object>();
+	Map<String, Object>					bridgeProperties	= new HashMap<String, Object>();
 	TransformersHook					transformersHook;
 	ServiceRegistration<WeavingHook>	transformersHookRegistration;
 
@@ -55,7 +68,7 @@ public class JPAManager {
 	Config	config;
 
 	@Activate
-	void activate(BundleContext context, Map<String,Object> props) throws Exception {
+	void activate(BundleContext context, Map<String, Object> props) throws Exception {
 		this.context = context;
 		config = Converter.cnv(Config.class, props);
 
@@ -111,8 +124,7 @@ public class JPAManager {
 	 * any classes that the Persistence Provider needs from that class will be
 	 * satisfied.
 	 * 
-	 * @param pp
-	 *            Persistence Provider for this unit
+	 * @param pp Persistence Provider for this unit
 	 * @return A list of import clauses from the provider
 	 */
 	static Pattern	WORD	= Pattern.compile("[a-zA-Z0-9]+");
@@ -141,17 +153,17 @@ public class JPAManager {
 			//
 			// Get the import clauses
 			//
-			Clauses clauses = Clauses.parse((String) b.getHeaders().get("Export-Package"), null);
+			Clauses clauses = Clauses.parse(b.getHeaders().get("Export-Package"), null);
 			if (!clauses.isEmpty()) {
 				List<String> list = new ArrayList<String>();
-				for (Entry<String,Map<String,String>> e : clauses.entrySet()) {
+				for (Entry<String, Map<String, String>> e : clauses.entrySet()) {
 
 					//
 					// Create a new clause
 					//
 					StringBuilder sb = new StringBuilder();
 					sb.append(e.getKey());
-					for (Entry<String,String> ee : e.getValue().entrySet()) {
+					for (Entry<String, String> ee : e.getValue().entrySet()) {
 						if (ee.getKey().endsWith(":"))
 							continue;
 
@@ -183,13 +195,12 @@ public class JPAManager {
 	 * originate in the bundle's JAR, it cannot come from a fragment. This
 	 * requirement is necessary to simplify enhancing entity classes.
 	 * 
-	 * @param bundle
-	 *            the bundle to be searched
+	 * @param bundle the bundle to be searched
 	 * @return a Persistent Bundle or null if it has no matching persistence
 	 *         units
 	 */
 	PersistentBundle parse(Bundle bundle) throws Exception {
-		String metapersistence = (String) bundle.getHeaders().get(META_PERSISTENCE);
+		String metapersistence = bundle.getHeaders().get(META_PERSISTENCE);
 
 		if (metapersistence == null || metapersistence.trim().isEmpty())
 			return null;
@@ -248,8 +259,7 @@ public class JPAManager {
 	/**
 	 * Validate against the name, provider, etc. TODO validate the PU
 	 * 
-	 * @param pu
-	 *            The persistence unit to check
+	 * @param pu The persistence unit to check
 	 * @return A failure reason when it is not good or null if it is ok
 	 */
 	private String isValid(PersistenceUnit pu) {

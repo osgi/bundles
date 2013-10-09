@@ -1,17 +1,22 @@
+
 package osgi.jpa.managed.hibernate.adapter;
 
-import java.net.*;
-import java.util.*;
-
-import javax.persistence.*;
-import javax.persistence.spi.*;
-import javax.transaction.*;
-
-import org.hibernate.jpa.*;
-import org.osgi.framework.*;
-
-import osgi.jpa.managed.api.*;
-import aQute.bnd.annotation.component.*;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
+import javax.persistence.spi.ProviderUtil;
+import javax.transaction.TransactionManager;
+import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import osgi.jpa.managed.api.JPABridgePersistenceProvider;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Reference;
 
 /**
  * Create the persistence provider for hibernate and delegate all the messages
@@ -38,8 +43,7 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 		try {
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 			return pp.createEntityManagerFactory(persistenceUnitName, properties);
-		}
-		finally {
+		} finally {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
 	}
@@ -61,8 +65,7 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 			return new DelegatedEntityManagerFactory(emf) {
 
 			};
-		}
-		finally {
+		} finally {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
 	}

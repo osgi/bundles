@@ -1,12 +1,23 @@
+
 package osgi.jpa.managed.aux;
 
-import java.lang.reflect.*;
-import java.sql.*;
-import java.util.*;
-import java.util.concurrent.*;
-
-import javax.sql.*;
-import javax.transaction.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.sql.DataSource;
+import javax.sql.XAConnection;
+import javax.sql.XADataSource;
+import javax.transaction.Synchronization;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 
 /**
  * The intent of this class is wrap an XA Data Source in transactional or
@@ -19,7 +30,7 @@ class DataSourceWrapper implements InvocationHandler {
 	private final XADataSource							xaDataSource;
 	private final TransactionManager					transactionManager;
 	private final boolean								transactionMode;
-	private final Map<Transaction,TransactionSession>	xaConnections	= new ConcurrentHashMap<Transaction,TransactionSession>();
+	private final Map<Transaction, TransactionSession>	xaConnections	= new ConcurrentHashMap<Transaction, TransactionSession>();
 	private final JPABridgeLogMessages					msgs;
 	private final Set<Connection>						connections		= Collections
 																				.synchronizedSet(new HashSet<Connection>());
@@ -94,7 +105,7 @@ class DataSourceWrapper implements InvocationHandler {
 		this.transactionMode = transactionMode;
 		this.msgs = msgs;
 		this.datasource = (DataSource) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {
-			DataSource.class
+				DataSource.class
 		}, this);
 	}
 
@@ -108,8 +119,7 @@ class DataSourceWrapper implements InvocationHandler {
 				close();
 
 			return method.invoke(target, args);
-		}
-		catch (InvocationTargetException ite) {
+		} catch (InvocationTargetException ite) {
 			throw ite.getTargetException();
 		}
 	}
@@ -127,8 +137,7 @@ class DataSourceWrapper implements InvocationHandler {
 		for (Connection c : connections) {
 			try {
 				c.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				// ignore
 			}
 		}
@@ -204,7 +213,8 @@ class DataSourceWrapper implements InvocationHandler {
 			transactionManager.getTransaction().registerSynchronization(new Synchronization() {
 
 				@Override
-				public void beforeCompletion() {}
+				public void beforeCompletion() {
+				}
 
 				@Override
 				public void afterCompletion(int status) {
@@ -222,11 +232,9 @@ class DataSourceWrapper implements InvocationHandler {
 			});
 
 			return session0.getConnection();
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw e;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new SQLException("DataSourceWrapper:getConnection", e);
 		}
 	}
@@ -261,7 +269,7 @@ class DataSourceWrapper implements InvocationHandler {
 		ConnectionWrapper(Connection delegate) {
 			this.delegate = delegate;
 			this.proxy = (Connection) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {
-				Connection.class
+					Connection.class
 			}, this);
 		}
 
@@ -271,16 +279,13 @@ class DataSourceWrapper implements InvocationHandler {
 				// TODO Bit inefficient, should work for now
 				Method m = getClass().getMethod(method.getName(), method.getParameterTypes());
 				return m.invoke(this, args);
-			}
-			catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException e) {
 				try {
 					return method.invoke(delegate, args);
-				}
-				catch (InvocationTargetException t) {
+				} catch (InvocationTargetException t) {
 					throw t.getTargetException();
 				}
-			}
-			catch (InvocationTargetException ite) {
+			} catch (InvocationTargetException ite) {
 				throw ite.getTargetException();
 			}
 		}

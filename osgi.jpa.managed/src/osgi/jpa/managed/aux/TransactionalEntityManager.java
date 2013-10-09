@@ -1,11 +1,25 @@
+
 package osgi.jpa.managed.aux;
 
-import java.util.*;
-
-import javax.persistence.*;
-import javax.persistence.criteria.*;
-import javax.persistence.metamodel.*;
-import javax.transaction.*;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityGraph;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
+import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.metamodel.Metamodel;
+import javax.transaction.Synchronization;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 import javax.transaction.TransactionRequiredException;
 
 /**
@@ -98,13 +112,11 @@ class TransactionalEntityManager implements EntityManager {
 				em.joinTransaction();
 				return em;
 
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				em.close();
 				throw new IllegalStateException("Registering synchronization to close EM", e);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -117,7 +129,8 @@ class TransactionalEntityManager implements EntityManager {
 	 * We automatically close so ignore.
 	 */
 	@Override
-	public void close() {}
+	public void close() {
+	}
 
 	@Override
 	public void clear() {
@@ -175,7 +188,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public <T> T find(Class<T> arg0, Object arg1, LockModeType arg2, Map<String,Object> arg3) {
+	public <T> T find(Class<T> arg0, Object arg1, LockModeType arg2, Map<String, Object> arg3) {
 		return getEM().find(arg0, arg1, arg2, arg3);
 	}
 
@@ -185,7 +198,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public <T> T find(Class<T> arg0, Object arg1, Map<String,Object> arg2) {
+	public <T> T find(Class<T> arg0, Object arg1, Map<String, Object> arg2) {
 		return getEM().find(arg0, arg1, arg2);
 	}
 
@@ -230,7 +243,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public Map<String,Object> getProperties() {
+	public Map<String, Object> getProperties() {
 		return getEM().getProperties();
 	}
 
@@ -255,7 +268,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void lock(Object arg0, LockModeType arg1, Map<String,Object> arg2) {
+	public void lock(Object arg0, LockModeType arg1, Map<String, Object> arg2) {
 		getEM().lock(arg0, arg1, arg2);
 	}
 
@@ -275,7 +288,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void refresh(Object arg0, LockModeType arg1, Map<String,Object> arg2) {
+	public void refresh(Object arg0, LockModeType arg1, Map<String, Object> arg2) {
 		getEM().refresh(arg0, arg1, arg2);
 	}
 
@@ -285,7 +298,7 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void refresh(Object arg0, Map<String,Object> arg1) {
+	public void refresh(Object arg0, Map<String, Object> arg1) {
 		getEM().refresh(arg0, arg1);
 	}
 
@@ -355,17 +368,17 @@ class TransactionalEntityManager implements EntityManager {
 	}
 
 	@Override
-	public EntityGraph< ? > createEntityGraph(String graphName) {
+	public EntityGraph<?> createEntityGraph(String graphName) {
 		return getEM().createEntityGraph(graphName);
 	}
 
 	@Override
-	public EntityGraph< ? > getEntityGraph(String graphName) {
+	public EntityGraph<?> getEntityGraph(String graphName) {
 		return getEM().getEntityGraph(graphName);
 	}
 
 	@Override
-	public <T> List<EntityGraph< ? super T>> getEntityGraphs(Class<T> entityClass) {
+	public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
 		return getEM().getEntityGraphs(entityClass);
 	}
 }

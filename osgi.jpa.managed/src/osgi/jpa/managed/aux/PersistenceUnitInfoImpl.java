@@ -1,21 +1,27 @@
+
 package osgi.jpa.managed.aux;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.persistence.*;
-import javax.persistence.spi.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import javax.persistence.SharedCacheMode;
+import javax.persistence.ValidationMode;
+import javax.persistence.spi.ClassTransformer;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
-import javax.sql.*;
-
-import org.osgi.framework.wiring.*;
-
-import osgi.jpa.managed.api.*;
+import javax.sql.DataSource;
+import org.osgi.framework.wiring.BundleWiring;
+import osgi.jpa.managed.api.JPABridgePersistenceProvider;
 import v2_0.Persistence.PersistenceUnit;
 import v2_0.Persistence.PersistenceUnit.Properties.Property;
-import v2_0.*;
-import aQute.lib.io.*;
+import v2_0.PersistenceUnitCachingType;
+import v2_0.PersistenceUnitValidationModeType;
+import aQute.lib.io.IO;
 
 /**
  * This class is the interface between the bridge (the manager) and the
@@ -35,10 +41,8 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	/**
 	 * Create a new Persistence Unit Info
 	 * 
-	 * @param bundle
-	 *            the source bundle
-	 * @param xml
-	 *            The xml of the persistence unit
+	 * @param bundle the source bundle
+	 * @param xml The xml of the persistence unit
 	 */
 	PersistenceUnitInfoImpl(PersistentBundle bundle, PersistenceUnit xml) throws Exception {
 		this.sourceBundle = bundle;
@@ -66,8 +70,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 			sourceBundle.bridge.transformersHook.register(sourceBundle.bundle, transformer);
 			if (transformer != null)
 				transformers.add(transformer);
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			e.printStackTrace();
 			throw e;
 		}
@@ -108,8 +111,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 				urls.add(new URL(url));
 			}
 			return urls;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -130,8 +132,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 						sourceBundle.bridge.xaDataSource, true, sourceBundle.bridge.log);
 			}
 			return jtadatasource.getDataSource();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -174,7 +175,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 			// loader. Yuck.
 			//
 			@Override
-			protected Class< ? > findClass(String className) throws ClassNotFoundException {
+			protected Class<?> findClass(String className) throws ClassNotFoundException {
 
 				//
 				// Use path of class, then get the resource
@@ -198,8 +199,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 					IO.copy(resource.openStream(), bout);
 					byte[] buffer = bout.toByteArray();
 					return defineClass(className, buffer, 0, buffer.length);
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					throw new ClassNotFoundException(className + " as resource" + path + " in " + getParent(), e);
 				}
 			}
@@ -235,8 +235,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 						sourceBundle.bridge.xaDataSource, false, sourceBundle.bridge.log);
 			}
 			return nonjtadatasource.getDataSource();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -298,6 +297,7 @@ class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
 	/*
 	 * TODO handle also version 2.1. This btw seems to have the same schema
 	 * exact for the version?
+	 * 
 	 * @see
 	 * javax.persistence.spi.PersistenceUnitInfo#getPersistenceXMLSchemaVersion
 	 * ()

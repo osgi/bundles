@@ -1,16 +1,22 @@
+
 package osgi.jpa.managed.datanucleus.adapter;
 
-import java.net.*;
-import java.util.*;
-
-import javax.persistence.spi.*;
-import javax.transaction.*;
-
-import org.osgi.framework.*;
-import org.osgi.framework.wiring.*;
-import org.osgi.util.tracker.*;
-
-import aQute.bnd.annotation.component.*;
+import java.net.URL;
+import java.util.ServiceLoader;
+import javax.persistence.spi.PersistenceProvider;
+import javax.transaction.TransactionManager;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.Version;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.util.tracker.BundleTracker;
+import org.osgi.util.tracker.BundleTrackerCustomizer;
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Reference;
 
 /**
  * Create the persistence provider for Eclipselink and delegate all the messages
