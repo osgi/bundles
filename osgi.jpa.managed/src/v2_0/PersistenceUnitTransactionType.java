@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.*;
 @XmlEnum
 public enum PersistenceUnitTransactionType {
 
-	JTA, RESOURCE_LOCAL;
+	JTA,
+	RESOURCE_LOCAL;
 
 	public String value() {
 		return name();

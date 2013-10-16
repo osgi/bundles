@@ -39,6 +39,7 @@ public class JPAManagedTest extends TestCase {
 	private TransactionManager	tm;
 	private ConfigurationAdmin	cm;
 
+	@Override
 	public void setUp() throws Exception {
 		try {
 			DummyDS ds = new DummyDS();

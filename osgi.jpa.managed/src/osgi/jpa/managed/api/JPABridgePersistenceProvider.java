@@ -27,24 +27,29 @@ public interface JPABridgePersistenceProvider {
 	/**
 	 * Provide the extra imports.
 	 * 
-	 * @return
+	 * @return a list of imports to add to the woven class.
 	 */
 	List<String> getWovenImports();
 
 	/**
 	 * Not clear what the spec is for the root. Hibernate could live with null
 	 * but EclipseLink wants a value
+	 * 
+	 * @param b The persistence unit bundle.
+	 * @param location The location of the persistence unit in the bundle.
+	 * @return the URL (or null) for this root url
 	 */
 
 	URL getRootUrl(Bundle b, String location);
 
 	/**
-	 * The bundle for the persistent unit bundle
+	 * The class loader for the persistent unit bundle. Some providers need a
+	 * special class loader setup to add additional resources.
 	 * 
-	 * @param persistentUnitBundle
-	 * @return
+	 * @param b the Persistent Unit Bundle
+	 * @return the class loader for this persistence unit.
 	 */
-	ClassLoader getClassLoader(Bundle persistentUnitBundle);
+	ClassLoader getClassLoader(Bundle b);
 
 	String getPersistentProviderClassName();
 }

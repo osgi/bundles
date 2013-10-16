@@ -24,7 +24,6 @@ import java.sql.Statement;
 import java.util.Hashtable;
 import javax.sql.XADataSource;
 import junit.framework.TestCase;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.BundleContext;
@@ -55,7 +54,7 @@ public class JDBCManagedTest extends TestCase {
 																							context,
 																							DataSourceFactory.class, null);
 
-	@Before
+	@Override
 	public void setUp() throws Exception {
 		try {
 			DummyDS ds = new DummyDS();
@@ -79,6 +78,10 @@ public class JDBCManagedTest extends TestCase {
 
 	/**
 	 * Check if we can create a H2 DataSource through the JDBC bundle.
+	 * 
+	 * @throws InterruptedException
+	 * @throws IOException
+	 * @throws SQLException
 	 */
 	public void testH2() throws InterruptedException, IOException, SQLException {
 		// Make sure no DataSource service yet exists
@@ -116,6 +119,8 @@ public class JDBCManagedTest extends TestCase {
 
 	/**
 	 * Test MySQL
+	 * 
+	 * @throws Exception
 	 */
 	public void testMySQL() throws Exception {
 		// Make sure no DataSource service yet exists

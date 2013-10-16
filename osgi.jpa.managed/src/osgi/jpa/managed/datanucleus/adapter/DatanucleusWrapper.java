@@ -47,14 +47,17 @@ public class DatanucleusWrapper implements PersistenceProvider, JPABridgePersist
 		return null;
 	}
 
+	@Override
 	public int hashCode() {
 		return pp.hashCode();
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		return pp.equals(obj);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
 		properties.put("datanucleus.jpa.addClassTransformer", "false");
@@ -73,18 +76,22 @@ public class DatanucleusWrapper implements PersistenceProvider, JPABridgePersist
 		return pp.createContainerEntityManagerFactory(info, properties);
 	}
 
+	@Override
 	public void generateSchema(PersistenceUnitInfo info, Map map) {
 		pp.generateSchema(info, map);
 	}
 
+	@Override
 	public boolean generateSchema(String persistenceUnitName, Map map) {
 		return pp.generateSchema(persistenceUnitName, map);
 	}
 
+	@Override
 	public ProviderUtil getProviderUtil() {
 		return pp.getProviderUtil();
 	}
 
+	@Override
 	public String toString() {
 		return pp.toString();
 	}

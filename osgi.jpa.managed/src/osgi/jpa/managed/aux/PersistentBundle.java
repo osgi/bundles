@@ -27,9 +27,8 @@ import v2_0.Persistence;
 
 /**
  * This class represents a bundle with one or more valid Persistence Units. It
- * maintains a the service registrations for the
- * {@link TransactionalEntityManager} for each persistence units and closes them
- * when applicable.
+ * maintains a the service registrations for the TransactionalEntityManager for
+ * each persistence units and closes them when applicable.
  */
 class PersistentBundle {
 

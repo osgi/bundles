@@ -36,6 +36,7 @@ public class EclipselinkTransactionController extends JTATransactionController {
 	 * 
 	 * @return The TransactionManager for the transaction system
 	 */
+	@Override
 	protected TransactionManager acquireTransactionManager() throws Exception {
 		return tm;
 	}

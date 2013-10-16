@@ -26,10 +26,12 @@ public class ObjectFactory {
 	 * Create a new ObjectFactory that can be used to create new instances of
 	 * schema derived classes for package: com.sun.java.xml.ns.persistence
 	 */
-	public ObjectFactory() {}
+	public ObjectFactory() {
+	}
 
 	/**
 	 * Create an instance of {@link Persistence }
+	 * @return x
 	 */
 	public Persistence createPersistence() {
 		return new Persistence();
@@ -37,6 +39,7 @@ public class ObjectFactory {
 
 	/**
 	 * Create an instance of {@link Persistence.PersistenceUnit }
+	 * @return x
 	 */
 	public Persistence.PersistenceUnit createPersistencePersistenceUnit() {
 		return new Persistence.PersistenceUnit();
@@ -44,6 +47,7 @@ public class ObjectFactory {
 
 	/**
 	 * Create an instance of {@link Persistence.PersistenceUnit.Properties }
+	 * @return x
 	 */
 	public Persistence.PersistenceUnit.Properties createPersistencePersistenceUnitProperties() {
 		return new Persistence.PersistenceUnit.Properties();
@@ -52,6 +56,7 @@ public class ObjectFactory {
 	/**
 	 * Create an instance of
 	 * {@link Persistence.PersistenceUnit.Properties.Property }
+	 * @return x
 	 */
 	public Persistence.PersistenceUnit.Properties.Property createPersistencePersistenceUnitPropertiesProperty() {
 		return new Persistence.PersistenceUnit.Properties.Property();

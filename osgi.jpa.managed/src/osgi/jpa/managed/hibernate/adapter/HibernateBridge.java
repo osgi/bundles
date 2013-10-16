@@ -49,10 +49,12 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 		JtaPlatformProviderImpl.transactionManager = tm;
 	}
 
+	@Override
 	public int hashCode() {
 		return pp.hashCode();
 	}
 
+	@Override
 	public EntityManagerFactory createEntityManagerFactory(String persistenceUnitName, Map properties) {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		try {
@@ -63,10 +65,12 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 		}
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		return pp.equals(obj);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
@@ -85,18 +89,22 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 		}
 	}
 
+	@Override
 	public void generateSchema(PersistenceUnitInfo info, Map map) {
 		pp.generateSchema(info, map);
 	}
 
+	@Override
 	public boolean generateSchema(String persistenceUnitName, Map map) {
 		return pp.generateSchema(persistenceUnitName, map);
 	}
 
+	@Override
 	public ProviderUtil getProviderUtil() {
 		return pp.getProviderUtil();
 	}
 
+	@Override
 	public String toString() {
 		return pp.toString();
 	}

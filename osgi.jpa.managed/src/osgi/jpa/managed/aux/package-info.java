@@ -34,3 +34,4 @@
  */
 
 package osgi.jpa.managed.aux;
+

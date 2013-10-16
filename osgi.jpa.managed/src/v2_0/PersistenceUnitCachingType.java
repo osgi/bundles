@@ -33,7 +33,11 @@ import javax.xml.bind.annotation.*;
 @XmlEnum
 public enum PersistenceUnitCachingType {
 
-	ALL, NONE, ENABLE_SELECTIVE, DISABLE_SELECTIVE, UNSPECIFIED;
+	ALL,
+	NONE,
+	ENABLE_SELECTIVE,
+	DISABLE_SELECTIVE,
+	UNSPECIFIED;
 
 	public String value() {
 		return name();

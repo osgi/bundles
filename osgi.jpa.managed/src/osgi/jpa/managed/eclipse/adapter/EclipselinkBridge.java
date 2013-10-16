@@ -49,18 +49,22 @@ public class EclipselinkBridge implements PersistenceProvider, JPABridgePersiste
 		pp = new org.eclipse.persistence.jpa.PersistenceProvider();
 	}
 
+	@Override
 	public int hashCode() {
 		return pp.hashCode();
 	}
 
+	@Override
 	public EntityManagerFactory createEntityManagerFactory(String persistenceUnitName, Map properties) {
 		return pp.createEntityManagerFactory(persistenceUnitName, properties);
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		return pp.equals(obj);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
 		properties.put("eclipselink.logging.level", "FINEST");
@@ -69,18 +73,22 @@ public class EclipselinkBridge implements PersistenceProvider, JPABridgePersiste
 		return pp.createContainerEntityManagerFactory(info, properties);
 	}
 
+	@Override
 	public void generateSchema(PersistenceUnitInfo info, Map map) {
 		pp.generateSchema(info, map);
 	}
 
+	@Override
 	public boolean generateSchema(String persistenceUnitName, Map map) {
 		return pp.generateSchema(persistenceUnitName, map);
 	}
 
+	@Override
 	public ProviderUtil getProviderUtil() {
 		return pp.getProviderUtil();
 	}
 
+	@Override
 	public String toString() {
 		return pp.toString();
 	}

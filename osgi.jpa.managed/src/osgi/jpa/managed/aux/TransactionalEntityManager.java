@@ -46,10 +46,10 @@ import javax.transaction.TransactionRequiredException;
 @SuppressWarnings("rawtypes")
 class TransactionalEntityManager implements EntityManager {
 
-	private final TransactionManager			transactionManager;
-	private final EntityManagerFactory			entityManagerFactory;
-	private final ThreadLocal<EntityManager>	perThreadEntityManager	= new ThreadLocal<EntityManager>();
-	private volatile boolean					open					= true;
+	private final TransactionManager	transactionManager;
+	private final EntityManagerFactory	entityManagerFactory;
+	final ThreadLocal<EntityManager>	perThreadEntityManager	= new ThreadLocal<EntityManager>();
+	volatile boolean					open					= true;
 
 	public TransactionalEntityManager(TransactionManager tm, EntityManagerFactory emf) {
 		this.transactionManager = tm;

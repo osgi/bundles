@@ -37,39 +37,48 @@ public class BitronixImpl implements javax.transaction.TransactionManager {
 		delegate = TransactionManagerServices.getTransactionManager();
 	}
 
+	@Override
 	public void begin() throws NotSupportedException, SystemException {
 		delegate.begin();
 	}
 
+	@Override
 	public void commit() throws HeuristicMixedException, HeuristicRollbackException, IllegalStateException,
 			RollbackException, SecurityException, SystemException {
 		delegate.commit();
 	}
 
+	@Override
 	public int getStatus() throws SystemException {
 		return delegate.getStatus();
 	}
 
+	@Override
 	public Transaction getTransaction() throws SystemException {
 		return delegate.getTransaction();
 	}
 
+	@Override
 	public void resume(Transaction arg0) throws IllegalStateException, InvalidTransactionException, SystemException {
 		delegate.resume(arg0);
 	}
 
+	@Override
 	public void rollback() throws IllegalStateException, SecurityException, SystemException {
 		delegate.rollback();
 	}
 
+	@Override
 	public void setRollbackOnly() throws IllegalStateException, SystemException {
 		delegate.setRollbackOnly();
 	}
 
+	@Override
 	public void setTransactionTimeout(int arg0) throws SystemException {
 		delegate.setTransactionTimeout(arg0);
 	}
 
+	@Override
 	public Transaction suspend() throws SystemException {
 		return delegate.suspend();
 	}

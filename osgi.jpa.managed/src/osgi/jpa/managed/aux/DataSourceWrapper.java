@@ -42,14 +42,14 @@ import javax.transaction.TransactionManager;
  */
 class DataSourceWrapper implements InvocationHandler {
 
-	private final XADataSource							xaDataSource;
-	private final TransactionManager					transactionManager;
-	private final boolean								transactionMode;
-	private final Map<Transaction, TransactionSession>	xaConnections	= new ConcurrentHashMap<Transaction, TransactionSession>();
-	private final JPABridgeLogMessages					msgs;
-	private final Set<Connection>						connections		= Collections
-																				.synchronizedSet(new HashSet<Connection>());
-	private DataSource									datasource;
+	final XADataSource							xaDataSource;
+	final TransactionManager					transactionManager;
+	final boolean								transactionMode;
+	final Map<Transaction, TransactionSession>	xaConnections	= new ConcurrentHashMap<Transaction, TransactionSession>();
+	final JPABridgeLogMessages					msgs;
+	final Set<Connection>						connections		= Collections
+																		.synchronizedSet(new HashSet<Connection>());
+	private DataSource							datasource;
 
 	/**
 	 * A TransactionSession is created when a XAConnection is used in a
@@ -268,6 +268,7 @@ class DataSourceWrapper implements InvocationHandler {
 	/**
 	 * Just show that we're a proxy on another XA Data Source
 	 */
+	@Override
 	public String toString() {
 		return xaDataSource + "'";
 	}
@@ -289,7 +290,7 @@ class DataSourceWrapper implements InvocationHandler {
 		}
 
 		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		public Object invoke(Object target, Method method, Object[] args) throws Throwable {
 			try {
 				// TODO Bit inefficient, should work for now
 				Method m = getClass().getMethod(method.getName(), method.getParameterTypes());

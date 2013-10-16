@@ -37,6 +37,7 @@ class TransformersHook implements WeavingHook {
 		this.imports = imports;
 	}
 
+	@Override
 	public void weave(WovenClass clazz) {
 		try {
 			if (transformers.isEmpty())

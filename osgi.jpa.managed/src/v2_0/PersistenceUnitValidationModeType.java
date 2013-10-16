@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.*;
 @XmlEnum
 public enum PersistenceUnitValidationModeType {
 
-	AUTO, CALLBACK, NONE;
+	AUTO,
+	CALLBACK,
+	NONE;
 
 	public String value() {
 		return name();

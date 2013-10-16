@@ -26,3 +26,4 @@ Export-Package: org.jboss.jandex.*
 # make sure we import the classes that are woven in.
 #
 Import-Package: org.hibernate.proxy, javassist.util.proxy,*
+Bundle-Version: 1.0.0

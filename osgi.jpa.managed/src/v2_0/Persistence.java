@@ -8,7 +8,6 @@
 package v2_0;
 
 import java.util.*;
-
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.*;
 
@@ -75,9 +74,10 @@ import javax.xml.bind.annotation.adapters.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-	"persistenceUnit"
+		"persistenceUnit"
 })
 @XmlRootElement(name = "persistence")
+@SuppressWarnings("javadoc")
 public class Persistence {
 
 	@XmlElement(name = "persistence-unit", required = true)
@@ -102,6 +102,7 @@ public class Persistence {
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
 	 * {@link Persistence.PersistenceUnit }
+	 * @return 
 	 */
 	public List<Persistence.PersistenceUnit> getPersistenceUnit() {
 		if (persistenceUnit == null) {
@@ -126,8 +127,7 @@ public class Persistence {
 	/**
 	 * Sets the value of the version property.
 	 * 
-	 * @param value
-	 *            allowed object is {@link String }
+	 * @param value allowed object is {@link String }
 	 */
 	public void setVersion(String value) {
 		this.version = value;
@@ -227,8 +227,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the description property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link String }
+		 * @param value allowed object is {@link String }
 		 */
 		public void setDescription(String value) {
 			this.description = value;
@@ -246,8 +245,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the provider property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link String }
+		 * @param value allowed object is {@link String }
 		 */
 		public void setProvider(String value) {
 			this.provider = value;
@@ -265,8 +263,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the jtaDataSource property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link String }
+		 * @param value allowed object is {@link String }
 		 */
 		public void setJtaDataSource(String value) {
 			this.jtaDataSource = value;
@@ -284,8 +281,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the nonJtaDataSource property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link String }
+		 * @param value allowed object is {@link String }
 		 */
 		public void setNonJtaDataSource(String value) {
 			this.nonJtaDataSource = value;
@@ -307,6 +303,7 @@ public class Persistence {
 		 * <p>
 		 * Objects of the following type(s) are allowed in the list
 		 * {@link String }
+		 * @return 
 		 */
 		public List<String> getMappingFile() {
 			if (mappingFile == null) {
@@ -331,6 +328,7 @@ public class Persistence {
 		 * <p>
 		 * Objects of the following type(s) are allowed in the list
 		 * {@link String }
+		 * @return 
 		 */
 		public List<String> getJarFile() {
 			if (jarFile == null) {
@@ -355,6 +353,7 @@ public class Persistence {
 		 * <p>
 		 * Objects of the following type(s) are allowed in the list
 		 * {@link String }
+		 * @return 
 		 */
 		public List<String> getClazz() {
 			if (clazz == null) {
@@ -375,8 +374,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the excludeUnlistedClasses property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link Boolean }
+		 * @param value allowed object is {@link Boolean }
 		 */
 		public void setExcludeUnlistedClasses(Boolean value) {
 			this.excludeUnlistedClasses = value;
@@ -394,8 +392,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the sharedCacheMode property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link PersistenceUnitCachingType }
+		 * @param value allowed object is {@link PersistenceUnitCachingType }
 		 */
 		public void setSharedCacheMode(PersistenceUnitCachingType value) {
 			this.sharedCacheMode = value;
@@ -413,9 +410,8 @@ public class Persistence {
 		/**
 		 * Sets the value of the validationMode property.
 		 * 
-		 * @param value
-		 *            allowed object is
-		 *            {@link PersistenceUnitValidationModeType }
+		 * @param value allowed object is
+		 *        {@link PersistenceUnitValidationModeType }
 		 */
 		public void setValidationMode(PersistenceUnitValidationModeType value) {
 			this.validationMode = value;
@@ -434,9 +430,8 @@ public class Persistence {
 		/**
 		 * Sets the value of the properties property.
 		 * 
-		 * @param value
-		 *            allowed object is
-		 *            {@link Persistence.PersistenceUnit.Properties }
+		 * @param value allowed object is
+		 *        {@link Persistence.PersistenceUnit.Properties }
 		 */
 		public void setProperties(Persistence.PersistenceUnit.Properties value) {
 			this.properties = value;
@@ -454,8 +449,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the name property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link String }
+		 * @param value allowed object is {@link String }
 		 */
 		public void setName(String value) {
 			this.name = value;
@@ -473,8 +467,7 @@ public class Persistence {
 		/**
 		 * Sets the value of the transactionType property.
 		 * 
-		 * @param value
-		 *            allowed object is {@link PersistenceUnitTransactionType }
+		 * @param value allowed object is {@link PersistenceUnitTransactionType }
 		 */
 		public void setTransactionType(PersistenceUnitTransactionType value) {
 			this.transactionType = value;
@@ -510,7 +503,7 @@ public class Persistence {
 		 */
 		@XmlAccessorType(XmlAccessType.FIELD)
 		@XmlType(name = "", propOrder = {
-			"property"
+				"property"
 		})
 		public static class Properties {
 
@@ -532,6 +525,7 @@ public class Persistence {
 			 * <p>
 			 * Objects of the following type(s) are allowed in the list
 			 * {@link Persistence.PersistenceUnit.Properties.Property }
+			 * @return 
 			 */
 			public List<Persistence.PersistenceUnit.Properties.Property> getProperty() {
 				if (property == null) {
@@ -579,8 +573,7 @@ public class Persistence {
 				/**
 				 * Sets the value of the name property.
 				 * 
-				 * @param value
-				 *            allowed object is {@link String }
+				 * @param value allowed object is {@link String }
 				 */
 				public void setName(String value) {
 					this.name = value;
@@ -598,8 +591,7 @@ public class Persistence {
 				/**
 				 * Sets the value of the value property.
 				 * 
-				 * @param value
-				 *            allowed object is {@link String }
+				 * @param value allowed object is {@link String }
 				 */
 				public void setValue(String value) {
 					this.value = value;

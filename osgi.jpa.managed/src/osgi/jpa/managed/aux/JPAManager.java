@@ -62,7 +62,7 @@ import aQute.service.logger.Log;
  */
 @Component(designateFactory = JPAManager.Config.class, immediate = true)
 public class JPAManager {
-
+	static Pattern						WORD				= Pattern.compile("[a-zA-Z0-9]+");
 	static final String					META_PERSISTENCE	= "Meta-Persistence";
 
 	BundleContext						context;
@@ -104,6 +104,7 @@ public class JPAManager {
 
 		bundles = new BundleTracker<PersistentBundle>(context, Bundle.ACTIVE + Bundle.STARTING, null) {
 
+			@Override
 			public PersistentBundle addingBundle(Bundle bundle, BundleEvent event) {
 				try {
 					//
@@ -119,6 +120,7 @@ public class JPAManager {
 				}
 			}
 
+			@Override
 			public void removedBundle(Bundle bundle, BundleEvent event, PersistentBundle put) {
 				put.close();
 			}
@@ -142,7 +144,6 @@ public class JPAManager {
 	 * @param pp Persistence Provider for this unit
 	 * @return A list of import clauses from the provider
 	 */
-	static Pattern	WORD	= Pattern.compile("[a-zA-Z0-9]+");
 
 	private List<String> getImports(PersistenceProvider pp) throws IOException {
 		//
