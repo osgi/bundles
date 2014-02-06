@@ -1,7 +1,7 @@
-Private-Package: osgi.jpa.managed.aux,\
+Private-Package: osgi.jpa.managed.support,\
 	v2_0
 	
-Bundle-Version: 2.0.0.${tstamp}
+Bundle-Version: 2.0.1.${tstamp}
 Export-Package: osgi.jpa.managed.api
 
 -includeresource: {readme.md=readme/managed.md}

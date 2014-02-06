@@ -1,0 +1,10 @@
+
+-buildpath: \
+	osgi.core;version='[4.3.1,5)',\
+	osgi.cmpn;version='[4.3.1,5)',\
+	biz.aQute.bnd.annotation;version='[2.2,3)',\
+	aQute.libg;version='[2.8.0,3)',\
+	slf4j.api;version=1.7
+	
+-sub: \
+	*.bnd

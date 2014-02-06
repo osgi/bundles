@@ -1,0 +1,8 @@
+Bundle-Version:0.0.0.${tstamp}
+Export-Package: \
+	osgi.enroute.struct.util,\
+	osgi.enroute.logging.messages.api,\
+	osgi.enroute.configurer.api, \
+	org.slf4j, \
+	
+	

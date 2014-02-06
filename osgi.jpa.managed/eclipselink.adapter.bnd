@@ -5,4 +5,4 @@
 Private-Package: osgi.jpa.managed.eclipse.adapter
 
 -includeresource: {readme.md=readme/eclipselink.md}
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1

@@ -75,6 +75,9 @@ public class HibernateBridge implements PersistenceProvider, JPABridgePersistenc
 	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		try {
+			//
+			// This is necessary to ensure the imports?
+			//
 			info.addTransformer(null);
 
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());

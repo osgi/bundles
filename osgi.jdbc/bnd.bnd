@@ -4,7 +4,8 @@
 	com.mysql.jdbc;version=5.1,\
 	biz.aQute.bndlib;version=2.2,\
 	org.apache.servicemix.bundles.junit;version=4.11,\
-	org.mockito.mockito-all;version=1.9.5.rc1
+	org.mockito.mockito-all;version=1.9.5.rc1,\
+	c3p0__c3p0;version=0.9.1.2
 
 -sub: *.bnd
 

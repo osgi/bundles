@@ -18,3 +18,4 @@ Service-Component: *
 	org.jboss__jandex;version=1.1
 
 -sub: *.bnd
+

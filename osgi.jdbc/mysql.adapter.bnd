@@ -1,8 +1,16 @@
+#
+# OSGi JDBC Managed MySQL Adapter
+#
+ 
 Bundle-Version: 5.1.25
 Bundle-Description: Wraps MySQL for OSGi and registers a Data Source Factory. This Data Source Factory is\
  mapped to the `com.mysql.jdbc.jdbc2.optional.MysqlXADataSource`. The driver is `com.mysql.jdbc.Driver`,\
  the service property `osgi.jdbc.driver.class` is set to this name. You can ensure a reference to the\
  MySQL driver by setting the reference filter to dataSourceFactory.target. 
+
 Service-Component: *
-Private-Package: osgi.jdbc.mysql.adapter
--includeresource: {OSGI-OPT/readme.md=readme-mysql.md}
+
+Private-Package: \
+	osgi.jdbc.mysql.adapter
+	
+-includeresource: {OSGI-OPT/readme.md=readme/mysql.md}

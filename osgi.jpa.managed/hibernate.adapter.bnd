@@ -1,6 +1,8 @@
 #
 # Make hibernate work the OSGi way
 #
+Bundle-Version: 1.0.1.${tstamp}
+
 
 Private-Package: osgi.jpa.managed.hibernate.adapter
 
@@ -25,5 +27,7 @@ Export-Package: org.jboss.jandex.*
 # weave the code. We therefore make sure we provide a TCCL and
 # make sure we import the classes that are woven in.
 #
-Import-Package: org.hibernate.proxy, javassist.util.proxy,*
-Bundle-Version: 1.0.0
+Import-Package: org.hibernate.proxy,\
+	javassist.util.proxy,\
+	org.apache.tools.ant.*;resolution:=optional,\
+	*

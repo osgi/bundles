@@ -1,0 +1,14 @@
+Bundle-Version:0.0.0.${tstamp}
+Private-Package: \
+	osgi.enroute.configurer.extender,\
+	osgi.enroute.executor.provider,\
+	osgi.enroute.logging.provider,\
+	osgi.enroute.timer.provider,\
+	aQute.service.reporter,\
+	aQute.bnd.annotation.metatype
+Export-Package: \
+	osgi.enroute.struct.util,\
+	osgi.enroute.logging.messages.api,\
+	osgi.enroute.configurer.api
+	
+Conditional-Package: aQute.lib*
