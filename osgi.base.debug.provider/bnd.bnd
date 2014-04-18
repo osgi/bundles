@@ -1,0 +1,12 @@
+Bundle-Version:1.0.0.${tstamp}
+
+
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0.0
+Private-Package: \
+	osgi.base.debug.provider
+Import-Package: \
+	org.osgi.service.log;resolution:=optional,\
+	*
+Bundle-Activator:osgi.base.debug.provider.EnRouteCommands

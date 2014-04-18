@@ -1,0 +1,6 @@
+# OSGi enRoute debug distro version 1.0.0
+
+org.apache.felix.gogo.runtime;		version='[0.10,1)'
+org.apache.felix.gogo.shell;		version='[0.10,1)'
+org.apache.felix.gogo.command;		version='[0.12,1)'
+osgi.base.debug.provider;			version=latest

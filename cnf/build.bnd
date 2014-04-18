@@ -6,12 +6,11 @@
 # Access to the JPM repo. Temporary local path
 # for testing.
 #
--pluginpath:  \
-	${workspace}/cnf/cache/jpmrepo.jar; \
-		url='http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/c85250219128113bf7ffda0ef3bb2f60448f2cbb'; \
-		sha1=c85250219128113bf7ffda0ef3bb2f60448f2cbb, \
-	${workspace}/cnf/bndrepo/aQute.jpm.bndrepo.jar
-
+-pluginpath:\
+   ${build}/plugins/aQute.jpm.bndrepo.jar; \
+    	url=http://repo.jpm4j.org/rest/bundle/51C83986E4B06EF1574B84F7/312378cc5cd772a63fc0b9335e81c3e95bcba1b3; \
+    	sha1=f3b753fc12ec18c9cb7e0977cbe52cd4404e237a
+	
 
 -plugin: \
      aQute.library.bnd.JpmRepository; \
@@ -44,6 +43,10 @@ Bundle-License: http://opensource.org/licenses/Apache-2.0
 -make:                  (*).(jar);type=bnd; recipe="bnd/$1.bnd"
 
 test-cases:				${classes;CONCRETE;EXTENDS;junit.framework.TestCase}
+
+Service-Component: *
+-dsannotations: *
+
 
 ## Global defaults are loaded from the bnd library, place your specific settings here.
 

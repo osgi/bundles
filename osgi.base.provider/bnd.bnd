@@ -1,0 +1,27 @@
+Bundle-Version:				1.0.0.${tstamp}
+Bundle-Description:			Provides a java.util.Timer and java.util.concurrent.Executor service.\
+ Sharing timers and executors can make the overall system more performant and reduce memory consumption. \
+ Since these services are based on JRE classes/interfaces this bundle has no additional dependencies.
+ 
+Private-Package: \
+	osgi.executor.provider,\
+	osgi.timer.provider,\
+	osgi.dto.provider
+
+Export-Package: \
+	org.osgi.dto,\
+	osgi.enroute.dto.api
+
+Conditional-Package: aQute.lib*
+
+-buildpath: \
+	biz.aQute.bnd.annotation;version=@2.2,\
+	osgi.enroute.base.api;version=@1.0,\
+	aQute.libg;version=@2.8
+
+
+-includeresource: {readme.md}
+Import-Package: \
+	aQute.bnd.annotation.metatype;resolution:=optional,\
+	*
+-runfw:org.apache.felix.framework;version='[4.2.1,4.2.1]'

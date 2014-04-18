@@ -1,0 +1,10 @@
+Private-Package: \
+	org.slf4j.impl,\
+	org.slf4j.helpers,\
+	osgi.logger.provider
+Export-Package: \
+	osgi.enroute.logger.api,\
+	org.slf4j;-split-package:=merge-first,\
+	org.slf4j.spi
+
+Bundle-Version:1.0.0.${tstamp}

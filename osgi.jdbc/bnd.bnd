@@ -10,3 +10,5 @@
 -sub: *.bnd
 
 Conditional-Package: aQute.lib*
+
+-fixupmessages: Unresolved

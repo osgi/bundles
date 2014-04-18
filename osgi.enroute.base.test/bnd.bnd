@@ -1,0 +1,48 @@
+Bundle-Version:				0.0.0.${tstamp}
+Bundle-Description:			This project contains tests for the eRoute Base profile. \
+It tests all the capabilities that should be provided. These are not in-depth white \
+box tests, the primary purpose is to verify that all capabilities are provided.
+
+Test-Cases: \
+	${classes;CONCRETE;EXTENDS;junit.framework.TestCase}
+
+-runbundles:\
+	osgi.enroute.base.debug.distro; version=1.0.0, \
+	osgi.enroute.base.distro; version=1.0.0
+
+
+-runee:JavaSE-1.6
+-runvm:				-ea
+
+-runfw:org.eclipse.osgi;version='[3.9.1.v20130814-1242,3.9.1.v20130814-1242]'
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0, \
+	org.apache.felix.gogo.shell,\
+	org.apache.felix.scr,\
+	osgi.enroute.testing.support; version=1.0
+	
+-runsystempackages: \
+	sun.reflect
+
+Private-Package: \
+	osgi.enroute.base.configurer.test,\
+	osgi.enroute.base.timer.test,\
+	osgi.enroute.base.logger.test,\
+	osgi.enroute.base.executor.test,\
+	osgi.enroute.base.authenticator.test,\
+	osgi.enroute.base.authorization.test
+
+
+-testpath: osgi.enroute.testing.support; version=1.0.0
+
+-runtrace: true
+
+#
+# Equinox disables gogo if no console is wanted. Kind of ugly
+# so the osgi.console= is required when using Equinox
+#
+-runproperties: \
+	osgi.console=, \
+	enRoute.watchlog=true
+

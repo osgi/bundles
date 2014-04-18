@@ -1,0 +1,18 @@
+Bundle-Version:			1.0.0.${tstamp}
+Bundle-Description: 	An Authenticator service that uses UserAdmin and a hash to authenticate a user.\
+	A strong hash with configurable salt and iteration is stored in the credentials of the User. \
+	Additionally, the authenticator provides a number of commands to create users and set passwords.
+
+-buildpath: \
+	osgi.enroute.base.api;version=@1.0.0,\
+	aQute.libg;version=@2.8
+
+Private-Package: \
+	osgi.authentication.useradmin.provider
+
+Export-Package:	\
+	osgi.enroute.authentication.api
+
+Conditional-Package: aQute.lib*
+
+-includeresource: {readme.md}

@@ -1,0 +1,13 @@
+
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0.0,\
+	slf4j.api;version=1.7,\
+	biz.aQute.bnd.annotation;version=2.2,\
+	org.apache.servicemix.bundles.junit;version=4.11,\
+	org.mockito.mockito-all;version=1.9,\
+	aQute.libg
+-sub: \
+	*.bnd
+
+Conditional-Package: aQute.lib*

@@ -1,0 +1,18 @@
+Bundle-Version:1.0.0.${tstamp}
+Bundle-Description: 		This component is an extender that reads the /configuration/configuration.json file \
+and installs the list of maps in there as configuration. The configurer supports a number of features \
+like profiles, macro expansion, binary resource handling, and configuration through system properties. \
+See the readme.md file for more details.
+
+Private-Package: 			osgi.configurer.provider
+Conditional-Package:		aQute.lib*
+
+-includeresource: 			{readme.md}
+
+-buildpath: \
+	osgi.enroute.base.api;version=1.0.0,\
+	biz.aQute.bndlib; version='[2.2,3)'
+
+Export-Package: \
+	osgi.enroute.configurer.api;provide:=true,\
+	aQute.service.reporter
