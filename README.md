@@ -1,6 +1,6 @@
 # Bundles
 
-REPLACED BY [osgi.enroute.bundles](osgi.enroute.bundles)
+REPLACED BY [osgi.enroute.bundles](https://github.com/osgi/bundles/blob/master/osgi.enroute.bundles)
 
 This repository contains the source code for bundles that are supported
 by the OSGi Alliance.
