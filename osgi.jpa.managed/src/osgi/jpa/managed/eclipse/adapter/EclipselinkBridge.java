@@ -67,8 +67,6 @@ public class EclipselinkBridge implements PersistenceProvider, JPABridgePersiste
 	@Override
 	@SuppressWarnings("unchecked")
 	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
-		properties.put("eclipselink.logging.level", "FINEST");
-		properties.put("eclipselink.ddl-generation", "create-or-extend-tables");
 		properties.put("eclipselink.target-server", EclipselinkTransactionController.class.getName());
 		return pp.createContainerEntityManagerFactory(info, properties);
 	}
